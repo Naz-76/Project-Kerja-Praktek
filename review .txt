@@ -1,0 +1,20 @@
+Review Alur Sistem & UI/UX 
+Alur sistem sisi pengguna:
+-Tidak bisa dan tidak ada menu untuk menambahkan anggota pada halaman informasi pendaftar / Anggota
+-Tidak ada halaman Profile untuk mengelola profile akun pengguna 
+-Data untuk KTP tidak terlalu di butuhkan
+Alur sistem admin:
+-Setelah admin log in dashboard publik tidak perlu ditampilkan
+-Navigation bar admin sebaiknya di simpan di sisi kiri bukan di atas karena admin memiliki banyak menu yang berbeda 
+-Setelah konfirmasi pendaftar diterima tidak ada fungsi untuk mengirim surat balasan & setelah status diterima jika admin menekan ditolak dan memberi pesan penolakan maka status penerimaan masih bisa di ubah.
+-Buat dashboard admin menampilkan detail mahasiswa atau kelompok yang terdaftar urutkan dari paling terbaru diterima.
+-Buat Menu untuk Laporan beriisikan rekap pendaftar, rekap program, rekap bidang, rekap status
+-Buat Menu Profil Admin untuk mengelola profile admin
+-Buat kotak pesan penerimaan tidak hanya kotak pengisian bidang 
+
+Sisi UI/UX:
+-Navbar pada bagian admin tempatkan di kiri dengan icon garis tiga jika tampilan lebih kecil (fleksible & support Handphone View)
+-Jangan tampilkan dashboard publik setelah admin log in tampilkan dashboard khusus admin 
+-Tidak ada tombol untuk kembali ke halaman sebelumnya mempersulit penggunaan sistem
+-Pada dashboard publik tidak ada halaman informasi dan info struktur diskominfo 
+-pada footer tambahkan informasi sosial media DISKOMINFO juga gmail diskominfo kabupaten garut

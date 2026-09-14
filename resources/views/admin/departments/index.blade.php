@@ -1,0 +1,88 @@
+@extends('layouts.admin')
+
+@section('title', 'Kelola Bidang & Kuota — Admin Diskominfo')
+
+@section('content')
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <a href="{{ route('admin.dashboard') }}" class="text-xs font-semibold text-slate-500 hover:text-[#014495] inline-flex items-center gap-1 font-heading transition-colors">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                </a>
+            </div>
+            <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900">Manajemen Bidang & Kuota Diskominfo</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Kelola data unit kerja/bidang dan alokasi total kuota pendaftaran per periode ({{ $period }}).</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Form Tambah Bidang -->
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-md space-y-5 h-fit">
+            <h2 class="font-heading text-base font-bold text-slate-800 border-b border-slate-100 pb-3">Tambah Bidang Baru</h2>
+            <form action="{{ route('admin.departments.store') }}" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5 font-heading">Nama Bidang *</label>
+                    <input type="text" name="name" required placeholder="Contoh: Bidang Aptika" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] focus:outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5 font-heading">Deskripsi Tugas & Fungsi</label>
+                    <textarea name="description" rows="3" placeholder="Uraian singkat..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] focus:outline-none transition-all leading-relaxed"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5 font-heading">Alokasi Total Kuota (Orang) *</label>
+                    <input type="number" name="quota_total" value="10" min="1" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] focus:outline-none transition-all">
+                </div>
+                <button type="submit" class="w-full py-3 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs shadow-md transition-all font-heading active:scale-[0.98]">
+                    Simpan Bidang Baru
+                </button>
+            </form>
+        </div>
+
+        <!-- Tabel List Bidang -->
+        <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden">
+            <div class="p-5 border-b border-slate-100 font-bold text-sm text-slate-800 font-heading bg-slate-50/50">
+                Daftar Bidang & Status Kuota Periode Ini
+            </div>
+            <div class="divide-y divide-slate-100 text-xs">
+                @foreach($departments as $dept)
+                    @php
+                        $quota = $dept->slotQuotas->first();
+                        $total = $quota ? $quota->quota_total : 0;
+                        $used = $quota ? $quota->quota_used : 0;
+                        $remaining = max(0, $total - $used);
+                    @endphp
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm font-heading">{{ $dept->name }}</h3>
+                                <p class="text-slate-500 text-xs mt-1 leading-relaxed">{{ $dept->description ?? 'Tidak ada deskripsi.' }}</p>
+                            </div>
+                            <form action="{{ route('admin.departments.destroy', $dept->id) }}" method="POST" onsubmit="return confirm('Hapus bidang ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-[#8B0000] hover:text-rose-700 text-xs font-bold font-heading">Hapus</button>
+                            </form>
+                        </div>
+
+                        <!-- Form Update Kuota Quick -->
+                        <form action="{{ route('admin.departments.update', $dept->id) }}" method="POST" class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                            @csrf @method('PUT')
+                            <input type="hidden" name="name" value="{{ $dept->name }}">
+                            <input type="hidden" name="description" value="{{ $dept->description }}">
+                            <div class="flex-grow flex items-center gap-2">
+                                <span class="font-semibold text-slate-700">Total Kuota:</span>
+                                <input type="number" name="quota_total" value="{{ $total }}" min="0" class="w-20 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold font-mono">
+                                <span class="text-slate-500 text-[11px] font-medium">(Terpakai: <b>{{ $used }}</b> | Sisa: <b class="text-[#014495]">{{ $remaining }}</b>)</span>
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all font-heading shadow-sm active:scale-[0.98]">
+                                Perbarui
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

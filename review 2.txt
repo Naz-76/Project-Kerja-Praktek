@@ -1,0 +1,19 @@
+Review Analisa sistem charter slot:
+Sisi Pendaftar
+-Tombol profile buat tidak menyatu di sebelah nama, jika ingin menampilkan profile maka tampilkan icon dan hapus nama pendaftar
+-Tombol log out simpan di halaman profile 
+
+UI/UX:
+-Buat tampilan fleksibel untuk tampilan desktop dan mobile 
+-Buat Status Kuota realtime sinkron dengan data yang ada di database 
+-Buat Pesan yang telah ditulis oleh admin saat verifikasi selesai tampil di halaman dashboard / halaman detail pengajuan
+-Buat Pendaftar yang ditolak juga dapat memeriksa detail pengajuan
+-Terdapat Bug dimana jika admin menetapkan bidang dan dan menerima pendaftar pada tampilan atau bagian pengajuan terbaru di nomer 3 informasi penempatan bidang disana saya mencoba menerima pendaftar menentukan bidang nya lalu menambahkan  pesan konfirmasi status berubah menjadi diterima namun setelah itu saya mencoba untuk menolak pengajuan yang telah diterima dan terubah menjadi di tolak pada halaman dashboard pengguna pada bagian status pengajuan terbaru no 3 masih berisi informasi penempatan bidang nya.
+-Buat Profile picture untuk kedua pengguna yang bisa di hapus & di ubah
+
+Sisi Admin
+-Sudah bagus namun informasi alokasi kuota terpakai masih tidak sinkron dengan data yang ada di database 
+
+Tambahan: buatkan data dummy beserta akunnya dengan berbagai macam variasi data ada yang di terima di tolak berbagai sekolah dan kampus juga berbagai pilihab program kerja pkl atau magang
+
+Catatan: Fungsi Authentifikasi Google masih belum berjalan dan fungsi pembuatan akun belum berjalan dan kode otp tidak dikirimkan ke alamat gmail tetapi di bagian notifikasi konfirmasi kan hal apa saja yang perlu di persiapkan untuk membangun fungsi intregrasi ini 
