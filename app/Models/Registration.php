@@ -26,6 +26,7 @@ class Registration extends Model
         'placed_at',
         'supervisor_name',
         'supervisor_position',
+        'supervisor_phone',
     ];
 
     protected $casts = [

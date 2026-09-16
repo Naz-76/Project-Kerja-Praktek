@@ -127,6 +127,13 @@ class QuotaService
      */
     public static function syncDepartmentQuotas()
     {
+        // Otomatis ubah status pendaftar yang masa magangnya sudah lewat menjadi "completed" (Selesai).
+        // Ini memastikan kuota mereka lepas dan kembali tersedia.
+        Registration::where('status', 'approved')
+            ->whereNotNull('end_date')
+            ->where('end_date', '<', now()->toDateString())
+            ->update(['status' => 'completed']);
+
         $period = self::getActivePeriod();
         $departments = \App\Models\Department::all();
 

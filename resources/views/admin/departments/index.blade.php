@@ -12,7 +12,7 @@
                 </a>
             </div>
             <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900">Manajemen Bidang & Kuota Diskominfo</h1>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">Kelola data unit kerja/bidang dan alokasi total kuota pendaftaran per periode ({{ $period }}).</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Kelola data unit kerja/bidang dan alokasi total kuota pendaftaran.</p>
         </div>
     </div>
 
@@ -79,6 +79,43 @@
                                 Perbarui
                             </button>
                         </form>
+
+                        <!-- Pembimbing Lapangan Section -->
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <h4 class="font-bold text-slate-800 text-xs mb-3 font-heading flex justify-between items-center">
+                                <span><i class="fa-solid fa-user-tie text-[#014495] mr-1"></i> Data Pembimbing Lapangan</span>
+                            </h4>
+                            
+                            <!-- List Pembimbing -->
+                            @if($dept->fieldSupervisors->count() > 0)
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                                    @foreach($dept->fieldSupervisors as $supervisor)
+                                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-start gap-2">
+                                            <div>
+                                                <div class="font-bold text-slate-800">{{ $supervisor->name }}</div>
+                                                <div class="text-[10px] text-slate-500">{{ $supervisor->position ?? 'Pembimbing' }} • {{ $supervisor->phone ?? '-' }}</div>
+                                            </div>
+                                            <form action="{{ route('admin.supervisors.destroy', $supervisor->id) }}" method="POST" onsubmit="return confirm('Hapus pembimbing ini?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="text-rose-600 hover:text-rose-800 text-xs" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-xs text-slate-500 italic mb-3">Belum ada data pembimbing.</div>
+                            @endif
+
+                            <!-- Form Tambah Pembimbing -->
+                            <form action="{{ route('admin.supervisors.store') }}" method="POST" class="flex gap-2">
+                                @csrf
+                                <input type="hidden" name="department_id" value="{{ $dept->id }}">
+                                <input type="text" name="name" required placeholder="Nama Pembimbing" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-[#2F90E1]">
+                                <input type="text" name="position" placeholder="Jabatan" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-[#2F90E1]">
+                                <input type="text" name="phone" placeholder="No. WA" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-[#2F90E1]">
+                                <button type="submit" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-plus"></i></button>
+                            </form>
+                        </div>
                     </div>
                 @endforeach
             </div>

@@ -40,6 +40,9 @@
             <div class="p-4 bg-sky-50 border border-sky-200 rounded-xl text-xs text-sky-900 space-y-1">
                 <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-user-tie text-sky-600"></i> Pembimbing Lapangan Anda:</span>
                 <p class="text-slate-700">{{ $registration->supervisor_name }} <span class="text-slate-500">({{ $registration->supervisor_position ?: 'Tidak ada keterangan jabatan' }})</span></p>
+                @if($registration->supervisor_phone)
+                    <p class="text-slate-600"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>{{ $registration->supervisor_phone }}</p>
+                @endif
             </div>
             @endif
             @if($registration->acceptance_message)

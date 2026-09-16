@@ -510,6 +510,34 @@ class DatabaseSeeder extends Seeder
                     ['name' => 'Gilang Ramadhan', 'nim' => '1806041', 'is_leader' => true],
                     ['name' => 'Maya Sandi', 'nim' => '1806042', 'is_leader' => false],
                 ]
+            ],
+
+            // ==========================================
+            // PENGAJUAN SELESAI (Magang Telah Berakhir)
+            // ==========================================
+            [
+                'user_name' => 'Kiki Faturrahman',
+                'user_email' => 'kiki.polsri@gmail.com',
+                'applicant_status' => 'Mahasiswa',
+                'program_type' => 'Magang',
+                'institution_name' => 'Politeknik Negeri Sriwijaya (POLSRI)',
+                'major' => 'Manajemen Informatika',
+                'level' => 'D3',
+                'teacher_name' => null,
+                'teacher_phone' => null,
+                'teacher_email' => null,
+                'preferred_dept' => 'Bidang Aplikasi Informatika (Aptika)',
+                'assigned_dept' => 'Bidang Aplikasi Informatika (Aptika)',
+                'supervisor_name' => 'Anry Sutrisno, S.Pd., M.Si',
+                'supervisor_position' => 'Kepala Bidang Aplikasi & Informatika',
+                'status' => 'completed',
+                'acceptance_message' => 'Disetujui untuk praktik magang pengembangan sistem pelaporan.',
+                'start_date' => now()->subMonths(3),
+                'end_date' => now()->subDays(5),
+                'participants' => [
+                    ['name' => 'Kiki Faturrahman', 'nim' => '06214083', 'is_leader' => true],
+                    ['name' => 'Rina Aprilia', 'nim' => '06214084', 'is_leader' => false],
+                ]
             ]
         ];
 
@@ -535,8 +563,8 @@ class DatabaseSeeder extends Seeder
                 'preferred_department_id' => $prefDept ? $prefDept->id : null,
                 'department_id' => $assDept ? $assDept->id : null,
                 'participant_count' => count($regData['participants']),
-                'start_date' => now()->addDays(7),
-                'end_date' => now()->addMonths(2),
+                'start_date' => $regData['start_date'] ?? now()->addDays(7),
+                'end_date' => $regData['end_date'] ?? now()->addMonths(2),
                 'status' => $regData['status'],
                 'rejection_reason' => $regData['rejection_reason'] ?? null,
                 'acceptance_message' => $regData['acceptance_message'] ?? null,

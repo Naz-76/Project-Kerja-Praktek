@@ -78,7 +78,7 @@
                                 $days = $start->diffInDays($end) + 1;
                                 $months = round($days / 30, 1);
                             @endphp
-                            {{ $days }} Hari <span class="text-[10px] font-medium text-slate-500">(~{{ $months }} Bln)</span>
+                            {{ $days }} Hari
                         @else
                             -
                         @endif
@@ -105,6 +105,9 @@
             <div class="p-5 bg-blue-50/70 border border-blue-200 rounded-2xl text-xs text-blue-950 space-y-1">
                 <span class="font-bold flex items-center gap-2 font-heading text-[#014495]"><i class="fa-solid fa-user-tie"></i> Pembimbing Lapangan:</span>
                 <p class="text-slate-700 font-medium">{{ $registration->supervisor_name }} <span class="text-slate-500">({{ $registration->supervisor_position ?: 'Tidak ada keterangan jabatan' }})</span></p>
+                @if($registration->supervisor_phone)
+                    <p class="text-slate-600"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> {{ $registration->supervisor_phone }}</p>
+                @endif
             </div>
             @endif
             @if($registration->acceptance_message)
@@ -216,7 +219,7 @@
                     <span class="font-bold text-xs text-emerald-400 uppercase tracking-wider block font-heading">Setujui / Ubah Ke DITERIMA</span>
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1.5">Bidang Penempatan Final *</label>
-                        <select name="department_id" required class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <select name="department_id" id="departmentSelect" required class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             <option value="">-- Pilih Bidang Diskominfo --</option>
                             @foreach($departments as $dept)
                                 @php $q = $dept->slotQuotas->first(); @endphp
@@ -226,15 +229,32 @@
                             @endforeach
                         </select>
                     </div>
+                    
+                    <div class="p-4 bg-slate-700/50 rounded-xl space-y-4 border border-slate-700">
+                        <div>
+                            <label class="block text-xs font-semibold text-emerald-400 mb-1.5"><i class="fa-solid fa-user-tie"></i> Pilih Pembimbing Lapangan</label>
+                            <select id="supervisorSelect" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="">-- Pilih Pembimbing (Otomatis Isi Form) --</option>
+                            </select>
+                            <p class="text-[10px] text-slate-400 mt-1">Daftar pembimbing menyesuaikan dengan Bidang Penempatan yang dipilih.</p>
+                        </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nama Lengkap Pembimbing Lapangan</label>
-                        <input type="text" name="supervisor_name" value="{{ old('supervisor_name', $registration->supervisor_name) }}" placeholder="Masukkan nama pembimbing..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Nama Lengkap Pembimbing</label>
+                                <input type="text" id="supervisorName" name="supervisor_name" value="{{ old('supervisor_name', $registration->supervisor_name) }}" placeholder="Ketik atau pilih dari atas..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Jabatan Pembimbing Lapangan</label>
-                        <input type="text" name="supervisor_position" value="{{ old('supervisor_position', $registration->supervisor_position) }}" placeholder="Masukkan jabatan pembimbing..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Jabatan Pembimbing</label>
+                                <input type="text" id="supervisorPosition" name="supervisor_position" value="{{ old('supervisor_position', $registration->supervisor_position) }}" placeholder="Jabatan..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">No. WA Pembimbing</label>
+                                <input type="text" id="supervisorPhone" name="supervisor_phone" value="{{ old('supervisor_phone', $registration->supervisor_phone) }}" placeholder="08xx..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
                     </div>
 
                     <div>
@@ -242,10 +262,14 @@
                         @php
                             $defaultMessage = '';
                             if (!$registration->acceptance_message) {
-                                $defaultMessage = 'Selamat, pengajuan Anda telah disetujui. Silakan bawa surat fisik pengantar resmi saat pertama kali masuk ke kantor Diskominfo Garut.';
+                                if (strtolower($registration->applicant_status) == 'siswa') {
+                                    $defaultMessage = 'Selamat, pengajuan Anda telah disetujui. Silakan bawa dokumen fisik Surat Pengantar Asli dari sekolah saat pertama kali masuk ke kantor Diskominfo Garut.';
+                                } else {
+                                    $defaultMessage = 'Selamat, pengajuan Anda telah disetujui. Silakan bawa dokumen fisik Surat Pengantar Asli dan Surat Rekomendasi Bakesbangpol saat pertama kali masuk ke kantor Diskominfo Garut.';
+                                }
                             }
                         @endphp
-                        <textarea name="acceptance_message" rows="3" placeholder="Tuliskan petunjuk / ucapan selamat penerimaan untuk pendaftar..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed">{{ old('acceptance_message', $registration->acceptance_message ?: $defaultMessage) }}</textarea>
+                        <textarea name="acceptance_message" rows="4" placeholder="Tuliskan petunjuk / ucapan selamat penerimaan untuk pendaftar..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed">{{ old('acceptance_message', $registration->acceptance_message ?: $defaultMessage) }}</textarea>
                     </div>
 
                     <div>
@@ -281,3 +305,65 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Data Pembimbing Lapangan
+        const supervisorsData = @json($departments->mapWithKeys(function($dept) {
+            return [$dept->id => $dept->fieldSupervisors];
+        }));
+
+        const departmentSelect = document.getElementById('departmentSelect');
+        const supervisorSelect = document.getElementById('supervisorSelect');
+        
+        const inputName = document.getElementById('supervisorName');
+        const inputPosition = document.getElementById('supervisorPosition');
+        const inputPhone = document.getElementById('supervisorPhone');
+
+        function updateSupervisorDropdown() {
+            const deptId = departmentSelect.value;
+            
+            // Kosongkan opsi lama
+            supervisorSelect.innerHTML = '<option value="">-- Pilih Pembimbing (Otomatis Isi Form) --</option>';
+            
+            if (deptId && supervisorsData[deptId]) {
+                const supervisors = supervisorsData[deptId];
+                supervisors.forEach(sup => {
+                    const option = document.createElement('option');
+                    option.value = sup.id;
+                    option.textContent = sup.name + (sup.position ? ` - ${sup.position}` : '');
+                    // Simpan data di dataset untuk diambil nanti
+                    option.dataset.name = sup.name;
+                    option.dataset.position = sup.position || '';
+                    option.dataset.phone = sup.phone || '';
+                    supervisorSelect.appendChild(option);
+                });
+            }
+        }
+
+        function fillSupervisorData() {
+            const selectedOption = supervisorSelect.options[supervisorSelect.selectedIndex];
+            if (selectedOption.value) {
+                inputName.value = selectedOption.dataset.name;
+                inputPosition.value = selectedOption.dataset.position;
+                inputPhone.value = selectedOption.dataset.phone;
+            } else {
+                // Jangan kosongkan jika user ingin input manual, 
+                // tapi bisa dikosongkan jika ingin force reset.
+            }
+        }
+
+        // Event Listeners
+        if (departmentSelect) {
+            departmentSelect.addEventListener('change', updateSupervisorDropdown);
+            // Panggil sekali saat load jika sudah ada yang terpilih
+            updateSupervisorDropdown();
+        }
+
+        if (supervisorSelect) {
+            supervisorSelect.addEventListener('change', fillSupervisorData);
+        }
+    });
+</script>
+@endpush

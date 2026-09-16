@@ -42,10 +42,10 @@
                 <div class="p-6 sm:p-8 rounded-3xl border border-slate-100/90 shadow-2xl bg-white text-slate-800 space-y-6 hover:shadow-[0_25px_60px_-15px_rgba(1,68,149,0.18)] hover:-translate-y-1 transition-all duration-300 ease-out">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                         <span class="font-heading font-extrabold text-sm sm:text-base text-slate-900">Informasi Real Time Ketersediaan Kuota</span>
-                        <div class="text-[11px] text-slate-600 font-medium text-left sm:text-right space-y-0.5">
+                        <div class="text-[11px] text-slate-600 font-medium text-left sm:text-right space-y-0.5 shrink-0 whitespace-nowrap">
                             @if($earliestDate && $latestDate)
-                                <div>Tanggal daftar termuda {{ \Carbon\Carbon::parse($earliestDate)->translatedFormat('j F Y') }}</div>
-                                <div>Tanggal selesai tertua {{ \Carbon\Carbon::parse($latestDate)->translatedFormat('j F Y') }}</div>
+                                <div>Daftar mulai: {{ \Carbon\Carbon::parse($earliestDate)->translatedFormat('j F Y') }}</div>
+                                <div>Selesai hingga: {{ \Carbon\Carbon::parse($latestDate)->translatedFormat('j F Y') }}</div>
                             @else
                                 <div>Tanggal daftar termuda 5 Agustus 2026</div>
                                 <div>Tanggal selesai tertua 25 Oktober 2026</div>
@@ -62,7 +62,10 @@
                                 $percent = $total > 0 ? min(100, round(($used / $total) * 100)) : 0;
                             @endphp
                             <div>
-                                <h4 class="font-bold text-sm text-slate-900 mb-2">{{ $dept->name }}</h4>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-sm text-slate-900">{{ $dept->name }}</h4>
+                                    <span class="text-xs text-slate-700 font-medium">Sisa Kuota {{ max(0, $total - $used) }}</span>
+                                </div>
                                 <div class="w-full bg-[#0B6FBB]/20 h-4 rounded-full overflow-hidden p-0.5">
                                     <div class="bg-[#0B6FBB] h-full rounded-full transition-all duration-500" style="width: {{ max(8, $percent) }}%"></div>
                                 </div>
@@ -160,14 +163,14 @@
 </div>
 
 <!-- Persyaratan Berkas Dokumen Resmi Section -->
-<div class="bg-gradient-to-b from-white via-[#2F90E1] to-[#014495] py-16 shadow-inner">
+<div class="bg-gradient-to-b from-slate-50 via-[#2F90E1]/30 to-[#2F90E1]/80 py-16 shadow-inner">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-10 flex justify-center items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-[#00E676] text-white flex items-center justify-center text-xl shadow-md">
                 <i class="fa-solid fa-folder-open"></i>
             </div>
-            <h2 class="font-heading text-2xl md:text-3xl font-extrabold text-white tracking-wide drop-shadow-md">
-                Persyaratan Berkas Dokumen Resmi
+            <h2 class="font-heading text-2xl md:text-3xl font-extrabold text-[#0a192f] tracking-wide">
+                PERSYARATAN BERKAS DOKUMEN RESMI
             </h2>
         </div>
 

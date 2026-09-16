@@ -32,7 +32,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 | ZONA PENDAFTAR (Siswa / Mahasiswa - Auth Required)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'no-cache'])->group(function () {
     Route::prefix('pendaftar')->group(function () {
         Route::get('/dashboard', [ApplicantDashboardController::class, 'index'])->name('applicant.dashboard');
         
@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
 | ZONA ADMIN (Kepegawaian Diskominfo - Auth & Admin Role Required)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin', 'no-cache'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     // Verifikasi & Penempatan Bidang
@@ -65,6 +65,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/bidang-kuota', [DepartmentController::class, 'store'])->name('admin.departments.store');
     Route::put('/bidang-kuota/{id}', [DepartmentController::class, 'update'])->name('admin.departments.update');
     Route::delete('/bidang-kuota/{id}', [DepartmentController::class, 'destroy'])->name('admin.departments.destroy');
+
+    // Pembimbing Lapangan
+    Route::post('/pembimbing-lapangan', [\App\Http\Controllers\Admin\FieldSupervisorController::class, 'store'])->name('admin.supervisors.store');
+    Route::delete('/pembimbing-lapangan/{id}', [\App\Http\Controllers\Admin\FieldSupervisorController::class, 'destroy'])->name('admin.supervisors.destroy');
 
     // Rekapitulasi Laporan
     Route::get('/laporan', [ReportController::class, 'index'])->name('admin.reports.index');
