@@ -29,4 +29,9 @@ class Department extends Model
     {
         return $this->hasMany(Registration::class, 'department_id');
     }
+
+    public function fieldSupervisors()
+    {
+        return $this->hasMany(FieldSupervisor::class, 'department_id');
+    }
 }

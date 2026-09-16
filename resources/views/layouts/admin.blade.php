@@ -86,13 +86,13 @@
         </div>
 
         <!-- Admin Profile Summary Box -->
-        <a href="{{ route('admin.profile') }}" class="p-4 mx-4 my-4 bg-slate-800/60 hover:bg-slate-800 rounded-xl border border-slate-700/50 flex items-center gap-3 transition-colors">
+        <div class="p-4 mx-4 my-4 bg-slate-800/60 rounded-xl border border-slate-700/50 flex items-center gap-3">
             <img src="{{ auth()->user()->avatar_url }}" alt="Avatar Admin" class="w-10 h-10 rounded-full object-cover border-2 border-amber-400">
             <div class="overflow-hidden">
                 <p class="text-xs font-bold text-white truncate">{{ auth()->user()->name }}</p>
                 <p class="text-[10px] text-amber-400 font-semibold">Admin Kepegawaian</p>
             </div>
-        </a>
+        </div>
 
         <!-- Sidebar Links -->
         <nav class="flex-grow px-3 py-2 space-y-1.5 text-xs font-medium">
@@ -207,6 +207,38 @@
             }
         });
 
+        // Auto reload when user switches back to this tab
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                window.location.reload();
+            }
+        });
+
+        // Smart Auto-Refresh: reload every 60 seconds, pause if admin is typing in a form
+        (function() {
+            const REFRESH_INTERVAL = 60;
+            let countdown = REFRESH_INTERVAL;
+
+            function isUserTyping() {
+                const active = document.activeElement;
+                if (!active) return false;
+                const tag = active.tagName.toLowerCase();
+                return tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable;
+            }
+
+            setInterval(function() {
+                if (document.visibilityState === 'hidden') return;
+                if (isUserTyping()) {
+                    countdown = REFRESH_INTERVAL;
+                    return;
+                }
+                countdown--;
+                if (countdown <= 0) {
+                    window.location.reload();
+                }
+            }, 1000);
+        })();
+
         // Auto-dismiss flash notifications
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('[data-flash]').forEach(function (el) {
@@ -218,6 +250,7 @@
             });
         });
     </script>
+@stack('scripts')
 </body>
 </html>
 

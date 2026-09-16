@@ -330,6 +330,38 @@
             }
         });
 
+        // Auto reload when user switches back to this tab
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                window.location.reload();
+            }
+        });
+
+        // Smart Auto-Refresh: reload every 60 seconds, pause if user is typing
+        (function() {
+            const REFRESH_INTERVAL = 60;
+            let countdown = REFRESH_INTERVAL;
+
+            function isUserTyping() {
+                const active = document.activeElement;
+                if (!active) return false;
+                const tag = active.tagName.toLowerCase();
+                return tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable;
+            }
+
+            setInterval(function() {
+                if (document.visibilityState === 'hidden') return;
+                if (isUserTyping()) {
+                    countdown = REFRESH_INTERVAL;
+                    return;
+                }
+                countdown--;
+                if (countdown <= 0) {
+                    window.location.reload();
+                }
+            }, 1000);
+        })();
+
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('[data-flash]').forEach(function (el) {
                 setTimeout(function () {

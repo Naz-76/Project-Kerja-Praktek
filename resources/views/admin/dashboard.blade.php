@@ -22,9 +22,9 @@
     </div>
 
     <!-- Primary Metric Cards (Status Berkas) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <!-- Card Total Pendaftaran -->
-        <div onclick="openQuickViewModal('all')" class="p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
+        <a href="{{ route('admin.verification.index', ['status' => 'all']) }}" class="block p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-heading group-hover:text-[#014495] transition-colors">Total Pendaftaran</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-300 group-hover:text-[#014495] transition-colors"></i>
@@ -39,10 +39,10 @@
                 <span class="text-slate-500 font-medium">Semua berkas masuk</span>
                 <span class="text-[10px] font-bold text-[#014495] opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data →</span>
             </div>
-        </div>
+        </a>
 
         <!-- Card Menunggu Verifikasi -->
-        <div onclick="openQuickViewModal('pending')" class="p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-amber-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
+        <a href="{{ route('admin.verification.index', ['status' => 'pending']) }}" class="block p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-amber-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-amber-600 uppercase tracking-wider font-heading">Menunggu Verifikasi</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-300 group-hover:text-amber-600 transition-colors"></i>
@@ -57,10 +57,10 @@
                 <span class="text-amber-600 font-semibold">{{ $totalPendingParticipants }} calon peserta</span>
                 <span class="text-[10px] font-bold text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">Tinjau →</span>
             </div>
-        </div>
+        </a>
 
         <!-- Card Disetujui / Diterima -->
-        <div onclick="openQuickViewModal('approved')" class="p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-emerald-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
+        <a href="{{ route('admin.verification.index', ['status' => 'approved']) }}" class="block p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-emerald-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider font-heading">Disetujui / Diterima</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-300 group-hover:text-emerald-600 transition-colors"></i>
@@ -75,10 +75,10 @@
                 <span class="text-emerald-600 font-semibold">{{ $totalApprovedParticipants }} peserta aktif</span>
                 <span class="text-[10px] font-bold text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data →</span>
             </div>
-        </div>
+        </a>
 
         <!-- Card Ditolak -->
-        <div onclick="openQuickViewModal('rejected')" class="p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-rose-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
+        <a href="{{ route('admin.verification.index', ['status' => 'rejected']) }}" class="block p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-rose-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-rose-600 uppercase tracking-wider font-heading">Ditolak</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-300 group-hover:text-rose-600 transition-colors"></i>
@@ -93,65 +93,58 @@
                 <span class="text-slate-500 font-medium">Berkas tidak memenuhi</span>
                 <span class="text-[10px] font-bold text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity">Lihat Alasan →</span>
             </div>
-        </div>
+        </a>
+        <!-- Card Selesai Magang -->
+        <a href="{{ route('admin.verification.index', ['status' => 'completed']) }}" class="block p-6 bg-white rounded-3xl border border-slate-200 shadow-md space-y-2 hover:shadow-xl hover:border-sky-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-sky-600 uppercase tracking-wider font-heading">Selesai Magang</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-300 group-hover:text-sky-600 transition-colors"></i>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="font-heading text-3xl font-extrabold text-sky-600">{{ $completedCount }}</span>
+                <div class="w-11 h-11 bg-sky-50 text-sky-600 group-hover:bg-sky-600 group-hover:text-white rounded-2xl flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-110 transition-all duration-300">
+                    <i class="fa-solid fa-flag-checkered"></i>
+                </div>
+            </div>
+            <div class="flex items-center justify-between text-[11px]">
+                <span class="text-slate-500 font-medium">Program telah usai</span>
+                <span class="text-[10px] font-bold text-sky-600 opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data →</span>
+            </div>
+        </a>
     </div>
 
-    <!-- Secondary Demographic Cards (Siswa vs Mahasiswa & Pembimbing Lapangan) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <!-- Siswa PKL -->
-        <div onclick="openQuickViewModal('siswa')" class="p-5 bg-gradient-to-br from-white to-blue-50/40 rounded-3xl border border-blue-100 shadow-sm space-y-2 hover:shadow-xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-[#014495] uppercase tracking-wider font-heading flex items-center gap-1.5">
-                    <i class="fa-solid fa-school text-[#2F90E1]"></i> Siswa (SMK/SMA)
-                </span>
-                <span class="px-2 py-0.5 bg-blue-100 text-[#014495] rounded-full text-[10px] font-bold">PKL</span>
-            </div>
-            <div class="flex items-baseline justify-between">
-                <span class="font-heading text-2xl font-extrabold text-[#014495]">{{ $totalSiswaCount }}</span>
-                <span class="text-[11px] text-slate-500 font-medium group-hover:text-[#014495] transition-colors">Pengajuan PKL →</span>
-            </div>
+
+
+    <!-- Kuota Real-time per Bidang -->
+    <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="font-heading text-base font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-[#014495]"></i> Alokasi Kuota Terpakai Per Bidang
+            </h2>
         </div>
 
-        <!-- Mahasiswa KP/Magang -->
-        <div onclick="openQuickViewModal('mahasiswa')" class="p-5 bg-gradient-to-br from-white to-indigo-50/40 rounded-3xl border border-indigo-100 shadow-sm space-y-2 hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-indigo-900 uppercase tracking-wider font-heading flex items-center gap-1.5">
-                    <i class="fa-solid fa-graduation-cap text-indigo-500"></i> Mahasiswa
-                </span>
-                <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded-full text-[10px] font-bold">KP / Magang</span>
-            </div>
-            <div class="flex items-baseline justify-between">
-                <span class="font-heading text-2xl font-extrabold text-indigo-900">{{ $totalMahasiswaCount }}</span>
-                <span class="text-[11px] text-slate-500 font-medium group-hover:text-indigo-900 transition-colors">Pengajuan Kuliah →</span>
-            </div>
-        </div>
-
-        <!-- Total Individu Aktif -->
-        <div onclick="openQuickViewModal('active_participants')" class="p-5 bg-gradient-to-br from-white to-emerald-50/40 rounded-3xl border border-emerald-100 shadow-sm space-y-2 hover:shadow-xl hover:border-emerald-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider font-heading flex items-center gap-1.5">
-                    <i class="fa-solid fa-users text-emerald-500"></i> Individu Dibina
-                </span>
-                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold">Aktif</span>
-            </div>
-            <div class="flex items-baseline justify-between">
-                <span class="font-heading text-2xl font-extrabold text-emerald-800">{{ $totalApprovedParticipants }}</span>
-                <span class="text-[11px] text-slate-500 font-medium group-hover:text-emerald-800 transition-colors">Orang di Diskominfo →</span>
-            </div>
-        </div>
-
-        <!-- Status Pembimbing Lapangan -->
-        <div onclick="openQuickViewModal('supervisors')" class="p-5 bg-gradient-to-br from-white to-amber-50/40 rounded-3xl border border-amber-100 shadow-sm space-y-2 hover:shadow-xl hover:border-amber-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider font-heading flex items-center gap-1.5">
-                    <i class="fa-solid fa-user-tie text-amber-600"></i> Pembimbing Lapangan
-                </span>
-                <span class="px-2 py-0.5 bg-amber-100 text-amber-900 rounded-full text-[10px] font-bold">Internal</span>
-            </div>
-            <div class="flex items-baseline justify-between">
-                <span class="font-heading text-2xl font-extrabold text-amber-900">{{ $assignedSupervisorCount }} <span class="text-sm font-normal text-slate-400">/ {{ $approvedCount }}</span></span>
-                <span class="text-[11px] text-amber-700 font-medium group-hover:text-amber-900 transition-colors">Lihat Bimbingan →</span>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            @foreach($departments as $dept)
+                @php
+                    $quota = $dept->slotQuotas->first();
+                    $total = $quota ? $quota->quota_total : 0;
+                    $used = $quota ? $quota->quota_used : 0;
+                    $remaining = max(0, $total - $used);
+                    $percent = $total > 0 ? round(($used / $total) * 100) : 0;
+                @endphp
+                <div class="p-3.5 bg-slate-50/60 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-800 font-heading truncate">{{ $dept->name }}</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-[#0B6FBB] to-[#014495] h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-500 font-medium">
+                        <span>Terpakai: <b>{{ $used }}</b> / {{ $total }}</span>
+                        <span class="font-bold text-[#014495]">{{ $remaining }} Slot Tersisa</span>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 
@@ -173,63 +166,96 @@
             <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200 font-heading">
                     <tr>
-                        <th class="p-4">Ketua & Tipe Tim</th>
+                        <th class="p-4 text-center w-12">No</th>
+                        <th class="p-4">Pendaftar / Ketua</th>
                         <th class="p-4">Status & Program</th>
-                        <th class="p-4">Sekolah / Perguruan Tinggi</th>
-                        <th class="p-4">Guru Pembimbing (Siswa)</th>
-                        <th class="p-4">Bidang Pilihan</th>
-                        <th class="p-4">Tanggal Masuk</th>
+                        <th class="p-4">Institusi & Pembimbing</th>
+                        <th class="p-4">Bidang & Pembimbing Lapangan</th>
+                        <th class="p-4">Status</th>
                         <th class="p-4 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($pendingRegistrations as $reg)
                         <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-4 text-center font-bold text-slate-500">
+                                {{ $loop->iteration }}
+                            </td>
                             <td class="p-4">
                                 <span class="font-bold text-slate-900 block font-heading text-sm">{{ $reg->leader->full_name ?? $reg->user->name }}</span>
                                 <div class="flex items-center gap-2 mt-0.5">
                                     <span class="text-slate-500 font-mono text-[11px]">NIS/NIM: {{ $reg->leader->nis_nim ?? '-' }}</span>
                                     <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md text-[10px] font-semibold">
-                                        {{ $reg->participant_count > 1 ? 'Kelompok (' . $reg->participant_count . ' Orang)' : 'Individu (1 Orang)' }}
+                                        {{ $reg->participant_count > 1 ? 'Kelompok (' . $reg->participant_count . ' Org)' : 'Individu' }}
                                     </span>
                                 </div>
+                                <span class="text-slate-400 text-[10px] block mt-1"><i class="fa-regular fa-clock mr-1"></i>Masuk: {{ $reg->created_at ? $reg->created_at->format('d/m/Y H:i') : '-' }}</span>
                             </td>
-                            <td class="p-4">
+                            <td class="p-4 font-semibold text-slate-800">
                                 @if(strtolower($reg->applicant_status) == 'siswa')
                                     <span class="px-2.5 py-1 bg-blue-50 text-[#014495] rounded-full border border-blue-200 font-bold text-[10px] font-heading inline-block">
-                                        <i class="fa-solid fa-school mr-1"></i> Siswa — PKL
+                                        <i class="fa-solid fa-school mr-1"></i> Siswa PKL
                                     </span>
                                 @else
                                     <span class="px-2.5 py-1 bg-indigo-50 text-indigo-800 rounded-full border border-indigo-200 font-bold text-[10px] font-heading inline-block">
-                                        <i class="fa-solid fa-graduation-cap mr-1"></i> Mahasiswa — {{ $reg->program_type }}
+                                        <i class="fa-solid fa-graduation-cap mr-1"></i> Mahasiswa {{ $reg->program_type }}
+                                    </span>
+                                @endif
+                                @if($reg->start_date && $reg->end_date)
+                                    <div class="mt-1.5 text-[11px] text-slate-600">
+                                        <span class="font-medium block"><i class="fa-regular fa-calendar text-[#2F90E1] mr-1"></i>{{ \Carbon\Carbon::parse($reg->start_date)->format('d/m/y') }} - {{ \Carbon\Carbon::parse($reg->end_date)->format('d/m/y') }}</span>
+                                        <span class="text-[10px] text-slate-400 block">({{ \Carbon\Carbon::parse($reg->start_date)->diffInDays(\Carbon\Carbon::parse($reg->end_date)) + 1 }} hari)</span>
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="p-4">
+                                <span class="font-semibold text-slate-800 block">{{ $reg->institution->institution_name ?? '-' }}</span>
+                                <span class="text-slate-500 text-[11px] block">Jurusan: {{ $reg->leader->major ?? '-' }}</span>
+                                @if($reg->institution && $reg->institution->teacher_name)
+                                    <div class="mt-1 pt-1 border-t border-slate-100 text-[11px] text-slate-600">
+                                        <span class="font-medium text-slate-800 block"><i class="fa-solid fa-chalkboard-user text-[#0B6FBB] mr-1"></i>{{ $reg->institution->teacher_name }}</span>
+                                        @if($reg->institution->teacher_phone)
+                                            <span class="text-slate-400 text-[10px]"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>{{ $reg->institution->teacher_phone }}</span>
+                                        @endif
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="p-4">
+                                @if($reg->department)
+                                    <span class="font-bold text-emerald-700 font-heading block">{{ $reg->department->name }}</span>
+                                    @if($reg->supervisor_name)
+                                        <div class="mt-1.5 p-2 bg-blue-50/70 border border-blue-100 rounded-lg">
+                                            <span class="font-bold text-[#014495] block text-[11px]"><i class="fa-solid fa-user-tie mr-1"></i>{{ $reg->supervisor_name }}</span>
+                                            <span class="text-[10px] text-slate-500 block">{{ $reg->supervisor_position ?: 'Pembimbing Lapangan' }}</span>
+                                        </div>
+                                    @else
+                                        <span class="text-[10px] text-amber-600 font-medium italic mt-0.5 block">Belum ada pembimbing lapangan</span>
+                                    @endif
+                                @else
+                                    <span class="text-slate-400 italic block">Belum Ditempatkan</span>
+                                    @if($reg->preferredDepartment)
+                                        <span class="block text-[10px] text-[#014495] font-semibold">(Pilihan: {{ $reg->preferredDepartment->name }})</span>
+                                    @endif
+                                @endif
+                            </td>
+                            <td class="p-4">
+                                @if($reg->status == 'pending')
+                                    <span class="px-3 py-1 bg-amber-100 text-amber-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-clock"></i> Pending
+                                    </span>
+                                @elseif($reg->status == 'approved')
+                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check"></i> Diterima
+                                    </span>
+                                @elseif($reg->status == 'rejected')
+                                    <span class="px-3 py-1 bg-rose-100 text-rose-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-xmark"></i> Ditolak
                                     </span>
                                 @endif
                             </td>
-                            <td class="p-4">
-                                <span class="font-semibold text-slate-900 block">{{ $reg->institution->institution_name ?? '-' }}</span>
-                                <span class="text-slate-500 text-[11px]">Jurusan: {{ $reg->leader->major ?? '-' }}</span>
-                            </td>
-                            <td class="p-4">
-                                @if(strtolower($reg->applicant_status) == 'siswa')
-                                    @if($reg->institution && $reg->institution->teacher_name)
-                                        <span class="font-semibold text-slate-900 block">{{ $reg->institution->teacher_name }}</span>
-                                        <span class="text-slate-500 text-[11px]"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>{{ $reg->institution->teacher_phone ?: '-' }}</span>
-                                    @else
-                                        <span class="text-slate-400 italic text-[11px]">Belum diisi</span>
-                                    @endif
-                                @else
-                                    <span class="text-slate-400 text-[10px] italic bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg block max-w-fit">Dari Kampus Pasca Diterima</span>
-                                @endif
-                            </td>
-                            <td class="p-4">
-                                <span class="font-bold text-[#014495]">{{ $reg->preferredDepartment->name ?? '-' }}</span>
-                            </td>
-                            <td class="p-4 text-slate-500 font-mono text-[11px]">
-                                {{ $reg->created_at ? $reg->created_at->format('d/m/Y H:i') : '-' }}
-                            </td>
                             <td class="p-4 text-center">
-                                <a href="{{ route('admin.verification.show', $reg->id) }}" class="px-3.5 py-1.5 bg-[#014495] hover:bg-[#002f6c] text-white rounded-xl font-bold transition-all text-xs font-heading inline-flex items-center gap-1.5 shadow-sm active:scale-[0.98]">
-                                    <i class="fa-solid fa-sliders"></i> Tinjau & Plotting
+                                <a href="{{ route('admin.verification.show', $reg->id) }}" class="px-3.5 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all inline-flex items-center gap-1.5 font-heading shadow-sm active:scale-[0.98]">
+                                    <i class="fa-solid fa-sliders"></i> Tinjau
                                 </a>
                             </td>
                         </tr>
@@ -243,96 +269,7 @@
         </div>
     </div>
 
-    <!-- Tabel 2: Siswa & Mahasiswa yang Telah Diterima & Pembimbing Lapangannya -->
-    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-md space-y-5">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
-            <div>
-                <h2 class="font-heading text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check text-emerald-600"></i> Siswa & Mahasiswa Diterima beserta Pembimbing Lapangan
-                </h2>
-                <p class="text-xs text-slate-500 mt-0.5">Daftar pendaftar aktif yang telah disetujui, ditempatkan di bidang, dan ditugaskan pembimbing lapangan internal Diskominfo.</p>
-            </div>
-            <a href="{{ route('admin.verification.index', ['status' => 'approved']) }}" class="text-xs font-bold text-emerald-700 hover:underline font-heading">
-                Lihat Semua Diterima ({{ $approvedCount }}) →
-            </a>
-        </div>
 
-        <div class="overflow-x-auto rounded-2xl border border-slate-200">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200 font-heading">
-                    <tr>
-                        <th class="p-4">Pendaftar / Ketua Tim</th>
-                        <th class="p-4">Status & Program</th>
-                        <th class="p-4">Institusi & Guru (Siswa)</th>
-                        <th class="p-4">Bidang Penempatan</th>
-                        <th class="p-4">Pembimbing Lapangan Diskominfo</th>
-                        <th class="p-4 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse($approvedRegistrations as $reg)
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="p-4">
-                                <span class="font-bold text-slate-900 block font-heading text-sm">{{ $reg->leader->full_name ?? $reg->user->name }}</span>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-slate-500 font-mono text-[11px]">NIS/NIM: {{ $reg->leader->nis_nim ?? '-' }}</span>
-                                    <span class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[10px] font-bold border border-emerald-200">
-                                        {{ $reg->participant_count }} Orang
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                @if(strtolower($reg->applicant_status) == 'siswa')
-                                    <span class="px-2.5 py-1 bg-blue-50 text-[#014495] rounded-full border border-blue-200 font-bold text-[10px] font-heading inline-block">
-                                        <i class="fa-solid fa-school mr-1"></i> Siswa PKL
-                                    </span>
-                                @else
-                                    <span class="px-2.5 py-1 bg-indigo-50 text-indigo-800 rounded-full border border-indigo-200 font-bold text-[10px] font-heading inline-block">
-                                        <i class="fa-solid fa-graduation-cap mr-1"></i> Mahasiswa {{ $reg->program_type }}
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="p-4">
-                                <span class="font-semibold text-slate-900 block">{{ $reg->institution->institution_name ?? '-' }}</span>
-                                @if(strtolower($reg->applicant_status) == 'siswa' && $reg->institution && $reg->institution->teacher_name)
-                                    <span class="text-slate-500 text-[11px] block mt-0.5"><i class="fa-solid fa-chalkboard-user text-[#014495] mr-1"></i>Guru: {{ $reg->institution->teacher_name }}</span>
-                                @else
-                                    <span class="text-slate-400 text-[10px] block mt-0.5">Jurusan: {{ $reg->leader->major ?? '-' }}</span>
-                                @endif
-                            </td>
-                            <td class="p-4">
-                                <span class="font-bold text-emerald-700 font-heading block">{{ $reg->department->name ?? 'Belum Ditentukan' }}</span>
-                                <span class="text-[10px] text-slate-400">Periode: {{ $reg->start_date ? $reg->start_date->format('d/m/y') : '-' }} s/d {{ $reg->end_date ? $reg->end_date->format('d/m/y') : '-' }}</span>
-                            </td>
-                            <td class="p-4">
-                                @if($reg->supervisor_name)
-                                    <div class="p-2.5 bg-blue-50/70 border border-blue-200 rounded-xl">
-                                        <span class="font-bold text-[#014495] block font-heading text-xs flex items-center gap-1.5">
-                                            <i class="fa-solid fa-user-tie"></i> {{ $reg->supervisor_name }}
-                                        </span>
-                                        <span class="text-[10px] text-slate-500 block mt-0.5">{{ $reg->supervisor_position ?: 'Pembimbing Lapangan' }}</span>
-                                    </div>
-                                @else
-                                    <span class="px-2.5 py-1 bg-amber-100 text-amber-800 font-bold rounded-lg text-[10px] inline-flex items-center gap-1">
-                                        <i class="fa-solid fa-triangle-exclamation"></i> Belum Ditugaskan
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="p-4 text-center">
-                                <a href="{{ route('admin.verification.show', $reg->id) }}" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold transition-all text-xs font-heading inline-flex items-center gap-1.5 shadow-sm active:scale-[0.98]">
-                                    <i class="fa-solid fa-eye"></i> Detail / Ubah
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="p-8 text-center text-slate-400 font-medium">Belum ada pendaftar yang berstatus diterima.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
 
     <!-- Bagian 3: Rekap Beban Bimbingan per Pembimbing Lapangan Diskominfo -->
     <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-md space-y-5">
@@ -359,6 +296,9 @@
                             <div>
                                 <h3 class="font-bold text-slate-900 font-heading text-sm">{{ $sup['name'] }}</h3>
                                 <p class="text-[11px] text-slate-500 font-medium leading-tight">{{ $sup['position'] }}</p>
+                                @if($sup['phone'])
+                                    <p class="text-[11px] text-slate-500 font-medium leading-tight mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>{{ $sup['phone'] }}</p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -381,15 +321,18 @@
                         <span class="text-[11px] font-bold text-slate-700 block font-heading">Daftar Tim yang Dibimbing:</span>
                         <div class="space-y-1.5 max-h-32 overflow-y-auto pr-1">
                             @foreach($sup['groups'] as $g)
-                                <div class="p-2 bg-white rounded-lg border border-slate-200 text-[11px] flex items-center justify-between">
+                                <a href="{{ route('admin.verification.show', $g->id) }}" class="p-2 bg-white hover:bg-slate-50 rounded-lg border border-slate-200 text-[11px] flex items-center justify-between transition-colors group">
                                     <div>
-                                        <span class="font-bold text-slate-800 block">{{ $g->leader->full_name ?? $g->user->name }}</span>
+                                        <span class="font-bold text-slate-800 block group-hover:text-[#014495] transition-colors">{{ $g->leader->full_name ?? $g->user->name }}</span>
                                         <span class="text-slate-500 text-[10px]">{{ $g->institution->institution_name ?? '-' }} ({{ $g->participant_count }} Orang)</span>
                                     </div>
-                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 font-bold text-[9px] rounded font-heading">
-                                        {{ $g->program_type }}
-                                    </span>
-                                </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 bg-slate-100 text-slate-700 font-bold text-[9px] rounded font-heading">
+                                            {{ $g->program_type }}
+                                        </span>
+                                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-[#014495] transition-colors text-[10px]"></i>
+                                    </div>
+                                </a>
                             @endforeach
                         </div>
                     </div>
@@ -402,40 +345,7 @@
         </div>
     </div>
 
-    <!-- Kuota Real-time per Bidang -->
-    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-md space-y-5">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-            <h2 class="font-heading text-lg font-bold text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie text-[#014495]"></i> Alokasi Kuota Terpakai Per Bidang
-            </h2>
-            <span class="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Periode: {{ $period }}</span>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            @foreach($departments as $dept)
-                @php
-                    $quota = $dept->slotQuotas->first();
-                    $total = $quota ? $quota->quota_total : 0;
-                    $used = $quota ? $quota->quota_used : 0;
-                    $remaining = max(0, $total - $used);
-                    $percent = $total > 0 ? round(($used / $total) * 100) : 0;
-                @endphp
-                <div class="p-5 bg-slate-50/60 rounded-2xl border border-slate-200 space-y-3">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="font-bold text-slate-800 font-heading">{{ $dept->name }}</span>
-                        <span class="font-mono text-[#014495] font-bold bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">{{ $remaining }} Slot Tersisa</span>
-                    </div>
-                    <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                        <div class="bg-gradient-to-r from-[#0B6FBB] to-[#014495] h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
-                    </div>
-                    <div class="flex justify-between text-[11px] text-slate-500 font-medium">
-                        <span>Terpakai: <b>{{ $used }}</b> / Total: <b>{{ $total }}</b></span>
-                        <span class="font-bold text-slate-700">{{ $percent }}% Terisi</span>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
 </div>
 
 <!-- ========================================================================= -->

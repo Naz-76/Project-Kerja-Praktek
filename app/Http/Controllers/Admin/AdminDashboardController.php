@@ -19,6 +19,7 @@ class AdminDashboardController extends Controller
         $pendingCount = Registration::where('status', 'pending')->count();
         $approvedCount = Registration::where('status', 'approved')->count();
         $rejectedCount = Registration::where('status', 'rejected')->count();
+        $completedCount = Registration::where('status', 'completed')->count();
 
         // Metrik Demografi Siswa vs Mahasiswa & Total Peserta
         $totalSiswaCount = Registration::where('applicant_status', 'Siswa')->count();
@@ -41,7 +42,7 @@ class AdminDashboardController extends Controller
 
         $pendingRegistrations = Registration::with(['user', 'department', 'preferredDepartment', 'leader', 'participants', 'institution'])
             ->where('status', 'pending')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->take(10)
             ->get();
 
@@ -62,6 +63,7 @@ class AdminDashboardController extends Controller
                 return [
                     'name' => $name,
                     'position' => $regs->first()->supervisor_position ?? 'Pembimbing Lapangan',
+                    'phone' => $regs->first()->supervisor_phone ?? null,
                     'department' => $regs->first()->department->name ?? '-',
                     'group_count' => $regs->count(),
                     'total_students' => (int) $regs->sum('participant_count'),
@@ -79,6 +81,7 @@ class AdminDashboardController extends Controller
             'pendingCount',
             'approvedCount',
             'rejectedCount',
+            'completedCount',
             'totalSiswaCount',
             'totalMahasiswaCount',
             'totalApprovedParticipants',

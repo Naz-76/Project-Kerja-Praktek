@@ -43,7 +43,13 @@ class VerificationController extends Controller
             });
         }
 
-        $registrations = $query->latest()->paginate(10)->withQueryString();
+        if ($status === 'pending') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $registrations = $query->paginate(10)->withQueryString();
         $departments = Department::with('slotQuotas')->get();
 
         return view('admin.verification.index', compact('registrations', 'departments', 'status', 'search'));
@@ -54,7 +60,7 @@ class VerificationController extends Controller
         $registration = Registration::with(['user', 'preferredDepartment', 'department', 'participants', 'institution', 'documents', 'replyLetter', 'verifier'])
             ->findOrFail($id);
 
-        $departments = Department::with('slotQuotas')->get();
+        $departments = Department::with(['slotQuotas', 'fieldSupervisors'])->get();
 
         return view('admin.verification.show', compact('registration', 'departments'));
     }
@@ -66,6 +72,7 @@ class VerificationController extends Controller
             'acceptance_message' => 'nullable|string|max:1000',
             'supervisor_name' => 'nullable|string|max:255',
             'supervisor_position' => 'nullable|string|max:255',
+            'supervisor_phone' => 'nullable|string|max:255',
             'reply_letter' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
@@ -80,6 +87,9 @@ class VerificationController extends Controller
                 $request->supervisor_name,
                 $request->supervisor_position
             );
+
+            // Simpan nomor HP pembimbing lapangan
+            $registration->update(['supervisor_phone' => $request->supervisor_phone]);
 
             if ($request->hasFile('reply_letter')) {
                 // Hapus file surat balasan lama jika sudah ada
@@ -103,7 +113,7 @@ class VerificationController extends Controller
             // Kirim notifikasi email ke Gmail pendaftar
             $this->sendStatusEmail($registration);
 
-            return redirect()->route('admin.verification.show', $id)
+            return redirect()->route('admin.verification.index')
                 ->with('success', 'Pengajuan berhasil disetujui, ditempatkan pada bidang pilihan, dan surat notifikasi dikirimkan ke email pendaftar.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -144,7 +154,7 @@ class VerificationController extends Controller
             // Kirim notifikasi email ke Gmail pendaftar
             $this->sendStatusEmail($registration);
 
-            return redirect()->route('admin.verification.show', $id)
+            return redirect()->route('admin.verification.index')
                 ->with('warning', 'Pengajuan telah ditolak dan surat pemberitahuan telah dikirimkan ke email pendaftar.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());

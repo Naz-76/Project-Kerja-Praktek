@@ -16,7 +16,7 @@ class DepartmentController extends Controller
         $period = QuotaService::getActivePeriod();
         $departments = Department::with(['slotQuotas' => function ($q) use ($period) {
             $q->where('period', $period);
-        }])->get();
+        }, 'fieldSupervisors'])->get();
 
         return view('admin.departments.index', compact('departments', 'period'));
     }

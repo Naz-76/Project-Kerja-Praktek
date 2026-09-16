@@ -129,6 +129,9 @@
                                 @if($activeRegistration->supervisor_position)
                                     <span class="text-[11px] text-slate-600 block font-medium">{{ $activeRegistration->supervisor_position }}</span>
                                 @endif
+                                @if($activeRegistration->supervisor_phone)
+                                    <span class="text-[11px] text-slate-600 block font-medium mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>{{ $activeRegistration->supervisor_phone }}</span>
+                                @endif
                             </div>
                         </div>
                     @endif
@@ -151,7 +154,14 @@
                     @endif
                 </div>
 
-                <div class="text-right pt-2">
+                <div class="flex items-center justify-between pt-2">
+                    @if($activeRegistration->status == 'rejected')
+                        <a href="{{ route('applicant.registration.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl shadow-md transition-all text-xs font-heading">
+                            <i class="fa-solid fa-rotate-right"></i> Ajukan Pendaftaran Ulang
+                        </a>
+                    @else
+                        <div></div> <!-- spacer -->
+                    @endif
                     <a href="{{ route('applicant.my-registration.show', $activeRegistration->id) }}" class="inline-flex items-center gap-2 text-xs font-bold text-[#014495] hover:text-[#002f6c]">
                         Lihat Seluruh Anggota Tim & Detail Berkas →
                     </a>

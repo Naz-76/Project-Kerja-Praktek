@@ -48,14 +48,14 @@
                                 <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-[#2F90E1] cursor-pointer transition-all flex items-center gap-3 bg-slate-50/50 has-[:checked]:border-[#014495] has-[:checked]:bg-blue-50/40">
                                     <input type="radio" name="applicant_status" value="Siswa" required class="w-4 h-4 text-[#014495] focus:ring-[#014495]" onchange="updateProgramType()">
                                     <div>
-                                        <span class="font-bold text-sm text-slate-800 block font-heading">Siswa SMK / SMA</span>
+                                        <span class="font-bold text-sm text-slate-800 block font-heading">Siswa</span>
                                         <span class="text-[11px] text-slate-500">Program PKL Sekolah Menengah Kejuruan</span>
                                     </div>
                                 </label>
                                 <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-[#2F90E1] cursor-pointer transition-all flex items-center gap-3 bg-slate-50/50 has-[:checked]:border-[#014495] has-[:checked]:bg-blue-50/40">
                                     <input type="radio" name="applicant_status" value="Mahasiswa" required class="w-4 h-4 text-[#014495] focus:ring-[#014495]" onchange="updateProgramType()">
                                     <div>
-                                        <span class="font-bold text-sm text-slate-800 block font-heading">Mahasiswa Perguruan Tinggi</span>
+                                        <span class="font-bold text-sm text-slate-800 block font-heading">Mahasiswa</span>
                                         <span class="text-[11px] text-slate-500">Program Kerja Praktik / Magang Kuliah</span>
                                     </div>
                                 </label>
@@ -80,8 +80,8 @@
                                     <div class="flex items-center gap-2.5">
                                         <input type="radio" name="program_type" value="KP" class="text-[#014495] focus:ring-[#014495]">
                                         <div>
-                                            <span class="font-bold text-xs text-slate-900 block font-heading">Kerja Praktik (KP)</span>
-                                            <span class="text-[10px] text-slate-500">Wajib SKS Kuliah</span>
+                                            <span class="font-bold text-xs text-slate-900 block font-heading">KP</span>
+                                            <span class="text-[10px] text-slate-500">Kerja Praktik</span>
                                         </div>
                                     </div>
                                 </label>
@@ -89,8 +89,8 @@
                                     <div class="flex items-center gap-2.5">
                                         <input type="radio" name="program_type" value="Magang" class="text-[#014495] focus:ring-[#014495]">
                                         <div>
-                                            <span class="font-bold text-xs text-slate-900 block font-heading">Magang Mandiri</span>
-                                            <span class="text-[10px] text-slate-500">Pengembangan Portofolio</span>
+                                            <span class="font-bold text-xs text-slate-900 block font-heading">Magang</span>
+                                            <span class="text-[10px] text-slate-500">Magang</span>
                                         </div>
                                     </div>
                                 </label>
@@ -117,7 +117,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">No. WhatsApp / Telepon <span class="text-rose-500">*</span></label>
-                            <input type="text" id="teacher_phone" name="teacher_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
+                            <input type="number" id="teacher_phone" name="teacher_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email Pembimbing (Opsional)</label>
@@ -158,12 +158,12 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-700 mb-1.5">NIS / NIM <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="participants[0][nis_nim]" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa">
+                                    <input type="number" name="participants[0][nis_nim]" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
-                                <input type="text" name="leader_phone" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (untuk koordinasi status)">
+                                <input type="number" name="leader_phone" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (untuk koordinasi status)">
                             </div>
                         </div>
                     </div>
@@ -399,7 +399,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">NIS / NIM <span class="text-rose-500">*</span></label>
-                    <input type="text" name="participants[${idx}][nis_nim]" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
+                    <input type="number" name="participants[${idx}][nis_nim]" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
                 </div>
             </div>
         </div>

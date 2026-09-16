@@ -31,6 +31,9 @@
             <a href="{{ route('admin.verification.index', ['status' => 'rejected']) }}" class="px-4 py-2.5 rounded-xl transition-all {{ $status == 'rejected' ? 'bg-[#8B0000] text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Ditolak
             </a>
+            <a href="{{ route('admin.verification.index', ['status' => 'completed']) }}" class="px-4 py-2.5 rounded-xl transition-all {{ $status == 'completed' ? 'bg-sky-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Selesai
+            </a>
         </div>
 
         <form action="{{ route('admin.verification.index') }}" method="GET" class="w-full md:w-auto">
@@ -48,9 +51,10 @@
             <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200 font-heading">
                     <tr>
+                        <th class="p-4 text-center w-12">No</th>
                         <th class="p-4">Pendaftar / Ketua</th>
                         <th class="p-4">Status & Program</th>
-                        <th class="p-4">Institusi & Guru/Dosen</th>
+                        <th class="p-4">Institusi & Pembimbing</th>
                         <th class="p-4">Bidang & Pembimbing Lapangan</th>
                         <th class="p-4">Status</th>
                         <th class="p-4 text-center">Aksi</th>
@@ -59,6 +63,9 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($registrations as $reg)
                         <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-4 text-center font-bold text-slate-500">
+                                {{ $registrations->firstItem() ? $registrations->firstItem() + $loop->index : $loop->iteration }}
+                            </td>
                             <td class="p-4">
                                 <span class="font-bold text-slate-900 text-sm block font-heading">{{ $reg->leader->full_name ?? $reg->user->name }}</span>
                                 <div class="flex items-center gap-2 mt-0.5">
@@ -67,6 +74,7 @@
                                         {{ $reg->participant_count > 1 ? 'Kelompok (' . $reg->participant_count . ' Org)' : 'Individu' }}
                                     </span>
                                 </div>
+                                <span class="text-slate-400 text-[10px] block mt-1"><i class="fa-regular fa-clock mr-1"></i>Masuk: {{ $reg->created_at ? $reg->created_at->format('d/m/Y H:i') : '-' }}</span>
                             </td>
                             <td class="p-4 font-semibold text-slate-800">
                                 @if(strtolower($reg->applicant_status) == 'siswa')
@@ -138,7 +146,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-slate-400 font-medium">Tidak ada pengajuan pendaftaran yang ditemukan.</td>
+                            <td colspan="7" class="p-8 text-center text-slate-400 font-medium">Tidak ada pengajuan pendaftaran yang ditemukan.</td>
                         </tr>
                     @endforelse
                 </tbody>

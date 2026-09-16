@@ -14,6 +14,7 @@ class ReportController extends Controller
         $programType = $request->query('program_type');
         $departmentId = $request->query('department_id');
         $status = $request->query('status');
+        $applicantStatus = $request->query('applicant_status');
 
         $query = Registration::with(['user', 'department', 'preferredDepartment', 'leader', 'institution']);
 
@@ -28,6 +29,10 @@ class ReportController extends Controller
         if ($status) {
             $query->where('status', $status);
         }
+        
+        if ($applicantStatus) {
+            $query->where('applicant_status', $applicantStatus);
+        }
 
         $registrations = $query->latest()->get();
         $departments = Department::all();
@@ -40,9 +45,9 @@ class ReportController extends Controller
             'magang' => Registration::where('program_type', 'Magang')->count(),
             'pending' => Registration::where('status', 'pending')->count(),
             'approved' => Registration::where('status', 'approved')->count(),
-            'rejected' => Registration::where('status', 'rejected')->count(),
+            'completed' => Registration::where('status', 'completed')->count(),
         ];
 
-        return view('admin.reports.index', compact('registrations', 'departments', 'stats', 'programType', 'departmentId', 'status'));
+        return view('admin.reports.index', compact('registrations', 'departments', 'stats', 'programType', 'departmentId', 'status', 'applicantStatus'));
     }
 }
