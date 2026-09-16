@@ -46,14 +46,14 @@
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-[#2F90E1] cursor-pointer transition-all flex items-center gap-3 bg-slate-50/50 has-[:checked]:border-[#014495] has-[:checked]:bg-blue-50/40">
-                                    <input type="radio" name="applicant_status" value="Siswa" required class="w-4 h-4 text-[#014495] focus:ring-[#014495]" onchange="updateProgramType()">
+                                    <input type="radio" name="applicant_status" value="Siswa" {{ old('applicant_status') === 'Siswa' ? 'checked' : '' }} required class="w-4 h-4 text-[#014495] focus:ring-[#014495]" onchange="updateProgramType()">
                                     <div>
                                         <span class="font-bold text-sm text-slate-800 block font-heading">Siswa</span>
                                         <span class="text-[11px] text-slate-500">Program PKL Sekolah Menengah Kejuruan</span>
                                     </div>
                                 </label>
                                 <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-[#2F90E1] cursor-pointer transition-all flex items-center gap-3 bg-slate-50/50 has-[:checked]:border-[#014495] has-[:checked]:bg-blue-50/40">
-                                    <input type="radio" name="applicant_status" value="Mahasiswa" required class="w-4 h-4 text-[#014495] focus:ring-[#014495]" onchange="updateProgramType()">
+                                    <input type="radio" name="applicant_status" value="Mahasiswa" {{ old('applicant_status') === 'Mahasiswa' ? 'checked' : '' }} required class="w-4 h-4 text-[#014495] focus:ring-[#014495]" onchange="updateProgramType()">
                                     <div>
                                         <span class="font-bold text-sm text-slate-800 block font-heading">Mahasiswa</span>
                                         <span class="text-[11px] text-slate-500">Program Kerja Praktik / Magang Kuliah</span>
@@ -69,7 +69,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="programTypeContainer">
                                 <label class="p-3.5 bg-white border-2 border-slate-200 rounded-2xl cursor-pointer hover:border-[#2F90E1] transition-all program-siswa hidden has-[:checked]:border-[#014495] has-[:checked]:bg-blue-50/40">
                                     <div class="flex items-center gap-2.5">
-                                        <input type="radio" name="program_type" value="PKL" class="text-[#014495] focus:ring-[#014495]">
+                                        <input type="radio" name="program_type" value="PKL" {{ old('program_type') === 'PKL' ? 'checked' : '' }} class="text-[#014495] focus:ring-[#014495]">
                                         <div>
                                             <span class="font-bold text-xs text-slate-900 block font-heading">PKL</span>
                                             <span class="text-[10px] text-slate-500">Praktik Kerja Lapangan</span>
@@ -78,7 +78,7 @@
                                 </label>
                                 <label class="p-3.5 bg-white border-2 border-slate-200 rounded-2xl cursor-pointer hover:border-[#2F90E1] transition-all program-mahasiswa hidden has-[:checked]:border-[#014495] has-[:checked]:bg-blue-50/40">
                                     <div class="flex items-center gap-2.5">
-                                        <input type="radio" name="program_type" value="KP" class="text-[#014495] focus:ring-[#014495]">
+                                        <input type="radio" name="program_type" value="KP" {{ old('program_type') === 'KP' ? 'checked' : '' }} class="text-[#014495] focus:ring-[#014495]">
                                         <div>
                                             <span class="font-bold text-xs text-slate-900 block font-heading">KP</span>
                                             <span class="text-[10px] text-slate-500">Kerja Praktik</span>
@@ -87,7 +87,7 @@
                                 </label>
                                 <label class="p-3.5 bg-white border-2 border-slate-200 rounded-2xl cursor-pointer hover:border-[#2F90E1] transition-all program-mahasiswa hidden has-[:checked]:border-[#014495] has-[:checked]:bg-blue-50/40">
                                     <div class="flex items-center gap-2.5">
-                                        <input type="radio" name="program_type" value="Magang" class="text-[#014495] focus:ring-[#014495]">
+                                        <input type="radio" name="program_type" value="Magang" {{ old('program_type') === 'Magang' ? 'checked' : '' }} class="text-[#014495] focus:ring-[#014495]">
                                         <div>
                                             <span class="font-bold text-xs text-slate-900 block font-heading">Magang</span>
                                             <span class="text-[10px] text-slate-500">Magang</span>
@@ -113,15 +113,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Lengkap Pembimbing <span class="text-rose-500">*</span></label>
-                            <input type="text" id="teacher_name" name="teacher_name" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Contoh: Drs. H. Ahmad Sudrajat, M.Pd">
+                            <input type="text" id="teacher_name" name="teacher_name" value="{{ old('teacher_name') }}" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Contoh: Drs. H. Ahmad Sudrajat, M.Pd">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">No. WhatsApp / Telepon <span class="text-rose-500">*</span></label>
-                            <input type="tel" id="teacher_phone" name="teacher_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
+                            <input type="tel" id="teacher_phone" name="teacher_phone" value="{{ old('teacher_phone') }}" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email Pembimbing (Opsional)</label>
-                            <input type="email" id="teacher_email" name="teacher_email" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="guru.pembimbing@sekolah.sch.id">
+                            <input type="email" id="teacher_email" name="teacher_email" value="{{ old('teacher_email') }}" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="guru.pembimbing@sekolah.sch.id">
                         </div>
                     </div>
                 </section>
@@ -154,18 +154,40 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Lengkap <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="participants[0][full_name]" value="{{ auth()->user()->name }}" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all">
+                                    <input type="text" name="participants[0][full_name]" value="{{ old('participants.0.full_name', auth()->user()->name) }}" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-700 mb-1.5">NIS / NIM <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="participants[0][nis_nim]" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa">
+                                    <input type="text" name="participants[0][nis_nim]" value="{{ old('participants.0.nis_nim') }}" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
-                                <input type="tel" name="leader_phone" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (untuk koordinasi status)">
+                                <input type="tel" name="leader_phone" value="{{ old('leader_phone') }}" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (untuk koordinasi status)">
                             </div>
                         </div>
+
+                        @if(old('participants') && count(old('participants')) > 1)
+                            @foreach(old('participants') as $idx => $p)
+                                @if($idx > 0)
+                                <div class="participant-row bg-white p-4 border border-slate-200 rounded-lg space-y-3 relative mt-3" id="participant_{{ $idx }}">
+                                    <button type="button" onclick="document.getElementById('participant_{{ $idx }}').remove()" class="absolute top-2 right-2 text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded hover:bg-rose-100">
+                                        <i class="fa-solid fa-trash"></i> Hapus
+                                    </button>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap <span class="text-rose-500">*</span></label>
+                                            <input type="text" name="participants[{{ $idx }}][full_name]" value="{{ $p['full_name'] ?? '' }}" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-600 mb-1">NIS / NIM <span class="text-rose-500">*</span></label>
+                                            <input type="text" name="participants[{{ $idx }}][nis_nim]" value="{{ $p['nis_nim'] ?? '' }}" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
                     <p class="text-[11px] text-slate-500 italic">
                         * Anggota kelompok hanya perlu mengisi Nama Lengkap dan NIS/NIM. Jika mendaftar perorangan, Anda tidak perlu menambah anggota.
@@ -183,11 +205,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Asal Sekolah / Kampus <span class="text-rose-500">*</span></label>
-                            <input type="text" name="institution_name" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Contoh: SMKN 1 Garut / Universitas Garut">
+                            <input type="text" name="institution_name" value="{{ old('institution_name') }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Contoh: SMKN 1 Garut / Universitas Garut">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Jurusan / Program Studi <span class="text-rose-500">*</span></label>
-                            <input type="text" name="major" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Contoh: Rekayasa Perangkat Lunak / Teknik Informatika">
+                            <input type="text" name="major" value="{{ old('major') }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Contoh: Rekayasa Perangkat Lunak / Teknik Informatika">
                         </div>
                     </div>
                 </section>
@@ -205,7 +227,7 @@
                         <select name="preferred_department_id" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all">
                             <option value="">-- Pilih Bidang yang Diminati (Opsional) --</option>
                             @foreach($departments as $dept)
-                                <option value="{{ $dept->id }}">{{ $dept->name }}</option>
+                                <option value="{{ $dept->id }}" {{ old('preferred_department_id') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
                             @endforeach
                         </select>
                         <div class="mt-3 p-3.5 bg-blue-50/60 border border-blue-200 rounded-2xl text-xs text-[#014495] flex items-start gap-2.5">
@@ -228,11 +250,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Tanggal Mulai <span class="text-rose-500">*</span></label>
-                            <input type="date" name="start_date" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all">
+                            <input type="date" name="start_date" value="{{ old('start_date') }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Tanggal Selesai <span class="text-rose-500">*</span></label>
-                            <input type="date" name="end_date" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all">
+                            <input type="date" name="end_date" value="{{ old('end_date') }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all">
                         </div>
                     </div>
                 </section>
@@ -336,9 +358,9 @@
             label.innerHTML = `<span class="text-[#014495] font-bold"><i class="fa-solid fa-file-pdf mr-1"></i> ${input.files[0].name}</span>`;
         }
     }
-    let participantCount = 1;
+    let participantCount = {{ old('participants') ? count(old('participants')) : 1 }};
 
-    function updateProgramType() {
+    function updateProgramType(keepSelectedProgram = false) {
         const status = document.querySelector('input[name="applicant_status"]:checked')?.value;
         const pSiswa = document.querySelectorAll('.program-siswa');
         const pMahasiswa = document.querySelectorAll('.program-mahasiswa');
@@ -349,15 +371,20 @@
         const teacherName = document.getElementById('teacher_name');
         const teacherPhone = document.getElementById('teacher_phone');
 
-        // Reset program type
-        programRadios.forEach(r => r.checked = false);
+        // Reset program type jika bukan dipanggil saat restore old value
+        if (!keepSelectedProgram) {
+            programRadios.forEach(r => r.checked = false);
+        }
         pSiswa.forEach(el => el.classList.add('hidden'));
         pMahasiswa.forEach(el => el.classList.add('hidden'));
 
         if (status === 'Siswa') {
             // Show program PKL
             pSiswa.forEach(el => el.classList.remove('hidden'));
-            document.querySelector('input[name="program_type"][value="PKL"]').checked = true;
+            if (!keepSelectedProgram || !document.querySelector('input[name="program_type"]:checked')) {
+                const pkl = document.querySelector('input[name="program_type"][value="PKL"]');
+                if (pkl) pkl.checked = true;
+            }
 
             // Show teacher section with Guru label
             teacherSection.classList.remove('hidden');
@@ -382,6 +409,12 @@
             teacherPhone.required = false;
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (document.querySelector('input[name="applicant_status"]:checked')) {
+            updateProgramType(true);
+        }
+    });
 
     function addParticipant() {
         const container = document.getElementById('participantsContainer');
