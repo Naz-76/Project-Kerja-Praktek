@@ -330,9 +330,27 @@
             }
         });
 
-        // Auto reload when user switches back to this tab
+        function isUserTyping() {
+            const active = document.activeElement;
+            if (active) {
+                const tag = active.tagName.toLowerCase();
+                if (tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable) {
+                    return true;
+                }
+            }
+            // Cegah reload jika terdapat input/textarea yang sedang memiliki nilai pada form aktif
+            const formInputs = document.querySelectorAll('form input:not([type="hidden"]):not([type="submit"]):not([type="button"]), form textarea');
+            for (let i = 0; i < formInputs.length; i++) {
+                if (formInputs[i].value && formInputs[i].value.trim() !== '') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Auto reload when user switches back to this tab (hanya jika form tidak sedang diisi)
         document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'visible') {
+            if (document.visibilityState === 'visible' && !isUserTyping()) {
                 window.location.reload();
             }
         });
@@ -341,13 +359,6 @@
         (function() {
             const REFRESH_INTERVAL = 60;
             let countdown = REFRESH_INTERVAL;
-
-            function isUserTyping() {
-                const active = document.activeElement;
-                if (!active) return false;
-                const tag = active.tagName.toLowerCase();
-                return tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable;
-            }
 
             setInterval(function() {
                 if (document.visibilityState === 'hidden') return;

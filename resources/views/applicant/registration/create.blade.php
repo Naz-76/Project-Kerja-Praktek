@@ -117,7 +117,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">No. WhatsApp / Telepon <span class="text-rose-500">*</span></label>
-                            <input type="number" id="teacher_phone" name="teacher_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
+                            <input type="tel" id="teacher_phone" name="teacher_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email Pembimbing (Opsional)</label>
@@ -158,12 +158,12 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-700 mb-1.5">NIS / NIM <span class="text-rose-500">*</span></label>
-                                    <input type="number" name="participants[0][nis_nim]" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa">
+                                    <input type="text" name="participants[0][nis_nim]" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
-                                <input type="number" name="leader_phone" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (untuk koordinasi status)">
+                                <input type="tel" name="leader_phone" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (untuk koordinasi status)">
                             </div>
                         </div>
                     </div>
@@ -399,7 +399,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">NIS / NIM <span class="text-rose-500">*</span></label>
-                    <input type="number" name="participants[${idx}][nis_nim]" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
+                    <input type="text" name="participants[${idx}][nis_nim]" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
                 </div>
             </div>
         </div>

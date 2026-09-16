@@ -41,10 +41,10 @@ class RegistrationController extends Controller
             
             'participants' => 'required|array|min:1',
             'participants.*.full_name' => 'required|string|max:255',
-            'participants.*.nis_nim' => 'required|numeric',
-            'leader_phone' => 'required|numeric',
+            'participants.*.nis_nim' => 'required|string|max:50|regex:/^[a-zA-Z0-9\.\-\/\s]+$/',
+            'leader_phone' => 'required|string|regex:/^[0-9+\-\s]+$/|min:10|max:16',
             'teacher_name' => 'required_if:applicant_status,Siswa|nullable|string|max:255',
-            'teacher_phone' => 'required_if:applicant_status,Siswa|nullable|numeric',
+            'teacher_phone' => 'required_if:applicant_status,Siswa|nullable|string|regex:/^[0-9+\-\s]+$/|min:10|max:16',
             'teacher_email' => 'nullable|email|max:255',
             
             'institution_name' => 'required|string|max:255',

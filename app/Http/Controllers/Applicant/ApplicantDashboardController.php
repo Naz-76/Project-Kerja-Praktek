@@ -12,12 +12,6 @@ class ApplicantDashboardController extends Controller
 {
     public function index()
     {
-        // Auto-complete expired approved registrations
-        Registration::where('status', 'approved')
-            ->whereNotNull('end_date')
-            ->where('end_date', '<', now()->toDateString())
-            ->update(['status' => 'completed']);
-
         $user = Auth::user();
         $registrations = Registration::with(['department', 'preferredDepartment', 'leader', 'institution', 'replyLetter'])
             ->where('user_id', $user->id)
