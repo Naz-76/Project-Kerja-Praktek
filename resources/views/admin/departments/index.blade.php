@@ -112,7 +112,7 @@
                                 <input type="hidden" name="department_id" value="{{ $dept->id }}">
                                 <input type="text" name="name" required placeholder="Nama Pembimbing" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-[#2F90E1]">
                                 <input type="text" name="position" placeholder="Jabatan" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-[#2F90E1]">
-                                <input type="text" name="phone" placeholder="No. WA" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-[#2F90E1]">
+                                <input type="tel" inputmode="numeric" pattern="[0-9]*" name="phone" placeholder="No. WA" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-[#2F90E1]">
                                 <button type="submit" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-plus"></i></button>
                             </form>
                         </div>

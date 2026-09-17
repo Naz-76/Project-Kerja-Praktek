@@ -57,7 +57,7 @@
                         <th class="p-4">Institusi & Pembimbing</th>
                         <th class="p-4">Bidang & Pembimbing Lapangan</th>
                         <th class="p-4">Status</th>
-                        <th class="p-4 text-center">Aksi</th>
+                        <th class="p-4 text-center w-36">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -136,11 +136,16 @@
                                     <span class="px-3 py-1 bg-rose-100 text-rose-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1">
                                         <i class="fa-solid fa-circle-xmark"></i> Ditolak
                                     </span>
+                                @elseif($reg->status == 'completed')
+                                    <span class="px-3 py-1 bg-sky-100 text-sky-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-flag-checkered"></i> Selesai
+                                    </span>
                                 @endif
                             </td>
-                            <td class="p-4 text-center">
-                                <a href="{{ route('admin.verification.show', $reg->id) }}" class="px-3.5 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all inline-flex items-center gap-1.5 font-heading shadow-sm active:scale-[0.98]">
-                                    <i class="fa-solid fa-sliders"></i> {{ $reg->status == 'approved' ? 'Ubah / Detail' : 'Tinjau' }}
+                            <td class="p-4 text-center whitespace-nowrap">
+                                <a href="{{ route('admin.verification.show', $reg->id) }}" class="inline-flex items-center justify-center gap-1.5 w-32 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all font-heading shadow-sm hover:shadow active:scale-[0.98] whitespace-nowrap">
+                                    <i class="fa-solid fa-sliders text-[11px]"></i>
+                                    <span>{{ in_array($reg->status, ['approved', 'completed']) ? 'Ubah / Detail' : 'Tinjau' }}</span>
                                 </a>
                             </td>
                         </tr>

@@ -172,7 +172,7 @@
                         <th class="p-4">Institusi & Pembimbing</th>
                         <th class="p-4">Bidang & Pembimbing Lapangan</th>
                         <th class="p-4">Status</th>
-                        <th class="p-4 text-center">Aksi</th>
+                        <th class="p-4 text-center w-36">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -251,11 +251,16 @@
                                     <span class="px-3 py-1 bg-rose-100 text-rose-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1">
                                         <i class="fa-solid fa-circle-xmark"></i> Ditolak
                                     </span>
+                                @elseif($reg->status == 'completed')
+                                    <span class="px-3 py-1 bg-sky-100 text-sky-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-flag-checkered"></i> Selesai
+                                    </span>
                                 @endif
                             </td>
-                            <td class="p-4 text-center">
-                                <a href="{{ route('admin.verification.show', $reg->id) }}" class="px-3.5 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all inline-flex items-center gap-1.5 font-heading shadow-sm active:scale-[0.98]">
-                                    <i class="fa-solid fa-sliders"></i> Tinjau
+                            <td class="p-4 text-center whitespace-nowrap">
+                                <a href="{{ route('admin.verification.show', $reg->id) }}" class="inline-flex items-center justify-center gap-1.5 w-32 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all font-heading shadow-sm hover:shadow active:scale-[0.98] whitespace-nowrap">
+                                    <i class="fa-solid fa-sliders text-[11px]"></i>
+                                    <span>{{ in_array($reg->status, ['approved', 'completed']) ? 'Ubah / Detail' : 'Tinjau' }}</span>
                                 </a>
                             </td>
                         </tr>
@@ -393,7 +398,7 @@
                             <th class="p-3.5">Durasi Magang</th>
                             <th class="p-3.5">Bidang</th>
                             <th class="p-3.5 text-center">Status</th>
-                            <th class="p-3.5 text-center">Aksi</th>
+                            <th class="p-3.5 text-center w-36">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="modalTableBody" class="divide-y divide-slate-100 bg-white">
@@ -619,6 +624,8 @@
                 statusBadge = '<span class="px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full font-bold text-[10px] font-heading inline-flex items-center gap-1"><i class="fa-solid fa-clock text-[9px]"></i> Pending</span>';
             } else if (item.status === 'approved') {
                 statusBadge = '<span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full font-bold text-[10px] font-heading inline-flex items-center gap-1"><i class="fa-solid fa-circle-check text-[9px]"></i> Diterima</span>';
+            } else if (item.status === 'completed') {
+                statusBadge = '<span class="px-2.5 py-1 bg-sky-50 text-sky-800 border border-sky-200 rounded-full font-bold text-[10px] font-heading inline-flex items-center gap-1"><i class="fa-solid fa-flag-checkered text-[9px]"></i> Selesai</span>';
             } else {
                 statusBadge = '<span class="px-2.5 py-1 bg-rose-50 text-rose-800 border border-rose-200 rounded-full font-bold text-[10px] font-heading inline-flex items-center gap-1"><i class="fa-solid fa-circle-xmark text-[9px]"></i> Ditolak</span>';
             }
@@ -660,10 +667,10 @@
                         ${supervisorInfo}
                     </td>
                     <td class="p-3.5 text-center">${statusBadge}</td>
-                    <td class="p-3.5 text-center">
-                        <a href="${item.detail_url}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-[11px] font-heading shadow-sm transition-all active:scale-[0.98]">
-                            <span>Tinjau</span>
-                            <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                    <td class="p-3.5 text-center whitespace-nowrap">
+                        <a href="${item.detail_url}" class="inline-flex items-center justify-center gap-1.5 w-32 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs font-heading shadow-sm hover:shadow transition-all active:scale-[0.98] whitespace-nowrap">
+                            <i class="fa-solid fa-sliders text-[11px]"></i>
+                            <span>${['approved', 'completed'].includes(item.status) ? 'Ubah / Detail' : 'Tinjau'}</span>
                         </a>
                     </td>
                 </tr>

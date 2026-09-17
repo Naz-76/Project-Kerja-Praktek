@@ -42,9 +42,9 @@ class RegistrationController extends Controller
             'participants' => 'required|array|min:1',
             'participants.*.full_name' => 'required|string|max:255',
             'participants.*.nis_nim' => 'required|string|max:50|regex:/^[a-zA-Z0-9\.\-\/\s]+$/',
-            'leader_phone' => 'required|string|regex:/^[0-9+\-\s]+$/|min:10|max:16',
+            'leader_phone' => 'required|string|regex:/^[0-9]+$/|min:10|max:16',
             'teacher_name' => 'required_if:applicant_status,Siswa|nullable|string|max:255',
-            'teacher_phone' => 'required_if:applicant_status,Siswa|nullable|string|regex:/^[0-9+\-\s]+$/|min:10|max:16',
+            'teacher_phone' => 'required_if:applicant_status,Siswa|nullable|string|regex:/^[0-9]+$/|min:10|max:16',
             'teacher_email' => 'nullable|email|max:255',
             
             'institution_name' => 'required|string|max:255',
@@ -55,6 +55,13 @@ class RegistrationController extends Controller
             'end_date' => 'required|date|after:start_date',
             
             'doc_surat_pengantar' => 'required|file|mimes:pdf|max:5120',
+        ], [
+            'leader_phone.regex' => 'Nomor WhatsApp Ketua hanya boleh berisi angka (0-9).',
+            'leader_phone.min' => 'Nomor WhatsApp Ketua minimal harus 10 digit angka.',
+            'leader_phone.max' => 'Nomor WhatsApp Ketua maksimal 15 digit angka.',
+            'teacher_phone.regex' => 'Nomor WhatsApp Guru Pembimbing hanya boleh berisi angka (0-9).',
+            'teacher_phone.min' => 'Nomor WhatsApp Guru Pembimbing minimal harus 10 digit angka.',
+            'teacher_phone.max' => 'Nomor WhatsApp Guru Pembimbing maksimal 15 digit angka.',
         ]);
 
         $user = Auth::user();

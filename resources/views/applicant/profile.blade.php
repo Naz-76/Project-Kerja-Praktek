@@ -140,7 +140,8 @@
             <!-- Nomor WhatsApp -->
             <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1.5 font-heading">No. WhatsApp / Telepon <span class="text-rose-500">*</span></label>
-                <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
+                <input type="tel" inputmode="numeric" minlength="10" maxlength="15" pattern="[0-9]{10,15}" name="phone" value="{{ old('phone', $user->phone) }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (10-15 digit)">
+                <p class="text-[11px] text-slate-400 mt-1">Minimal 10 digit angka (contoh: 081234567890)</p>
                 @error('phone') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
             </div>
 

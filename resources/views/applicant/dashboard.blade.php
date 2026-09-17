@@ -60,13 +60,15 @@
                         3
                     </div>
                     <div>
-                        <h3 class="font-bold {{ $activeRegistration->status == 'approved' ? 'text-emerald-800' : ($activeRegistration->status == 'rejected' ? 'text-rose-800' : 'text-slate-800') }} text-sm sm:text-base font-heading flex items-center gap-2">
-                            <i class="fa-solid {{ $activeRegistration->status == 'approved' ? 'fa-circle-check text-emerald-600' : ($activeRegistration->status == 'rejected' ? 'fa-circle-xmark text-rose-600' : 'fa-circle-info text-slate-400') }} text-xs"></i>
-                            {{ $activeRegistration->status == 'approved' ? 'Selamat anda berhasil lolos!' : ($activeRegistration->status == 'rejected' ? 'Pengajuan Ditolak' : 'Hasil Verifikasi Akhir') }}
+                        <h3 class="font-bold {{ $activeRegistration->status == 'approved' ? 'text-emerald-800' : ($activeRegistration->status == 'completed' ? 'text-sky-800' : ($activeRegistration->status == 'rejected' ? 'text-rose-800' : 'text-slate-800')) }} text-sm sm:text-base font-heading flex items-center gap-2">
+                            <i class="fa-solid {{ $activeRegistration->status == 'approved' ? 'fa-circle-check text-emerald-600' : ($activeRegistration->status == 'completed' ? 'fa-flag-checkered text-sky-600' : ($activeRegistration->status == 'rejected' ? 'fa-circle-xmark text-rose-600' : 'fa-circle-info text-slate-400')) }} text-xs"></i>
+                            {{ $activeRegistration->status == 'approved' ? 'Selamat anda berhasil lolos!' : ($activeRegistration->status == 'completed' ? 'Program Magang/PKL Telah Selesai' : ($activeRegistration->status == 'rejected' ? 'Pengajuan Ditolak' : 'Hasil Verifikasi Akhir')) }}
                         </h3>
                         <p class="text-[11px] sm:text-xs text-slate-600 mt-1 leading-relaxed">
                             @if($activeRegistration->status == 'approved')
                                 Selamat anda lolos untuk program magang / PKL silahkan melakukan tahap selanjutnya
+                            @elseif($activeRegistration->status == 'completed')
+                                Masa pelaksanaan program magang / PKL telah selesai. Terima kasih atas partisipasi dan kontribusi Anda di Diskominfo Garut.
                             @elseif($activeRegistration->status == 'rejected')
                                 Berkas belum memenuhi persyaratan kuota / administrasi. Silakan periksa catatan admin.
                             @else
@@ -94,6 +96,10 @@
                         @elseif($activeRegistration->status == 'approved')
                             <span class="px-4 py-2 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold flex items-center gap-2">
                                 <i class="fa-solid fa-circle-check"></i> DITERIMA ({{ $activeRegistration->department->name ?? 'Bidang Terpilih' }})
+                            </span>
+                        @elseif($activeRegistration->status == 'completed')
+                            <span class="px-4 py-2 bg-sky-100 text-sky-800 border border-sky-300 rounded-xl text-xs font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-flag-checkered"></i> SELESAI ({{ $activeRegistration->department->name ?? 'Bidang Terpilih' }})
                             </span>
                         @elseif($activeRegistration->status == 'rejected')
                             <span class="px-4 py-2 bg-rose-100 text-rose-800 border border-rose-300 rounded-xl text-xs font-bold flex items-center gap-2">

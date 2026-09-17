@@ -161,6 +161,20 @@ class VerificationController extends Controller
         }
     }
 
+    public function complete(Request $request, $id)
+    {
+        $registration = Registration::findOrFail($id);
+
+        try {
+            $this->quotaService->completeRegistration($registration, Auth::id());
+
+            return redirect()->route('admin.verification.index')
+                ->with('success', 'Status pengajuan pendaftaran berhasil ditandai sebagai SELESAI.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
     /**
      * Mengirim notifikasi email status penerimaan / penolakan ke pendaftar secara aman.
      */

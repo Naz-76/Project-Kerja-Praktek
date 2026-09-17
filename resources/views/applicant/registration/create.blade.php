@@ -117,7 +117,8 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">No. WhatsApp / Telepon <span class="text-rose-500">*</span></label>
-                            <input type="tel" id="teacher_phone" name="teacher_phone" value="{{ old('teacher_phone') }}" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx">
+                            <input type="tel" inputmode="numeric" minlength="10" maxlength="15" pattern="[0-9]{10,15}" id="teacher_phone" name="teacher_phone" value="{{ old('teacher_phone') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (10-15 digit)">
+                            <p class="text-[11px] text-slate-400 mt-1">Minimal 10 digit angka (contoh: 081234567890)</p>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email Pembimbing (Opsional)</label>
@@ -163,7 +164,8 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
-                                <input type="tel" name="leader_phone" value="{{ old('leader_phone') }}" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (untuk koordinasi status)">
+                                <input type="tel" inputmode="numeric" minlength="10" maxlength="15" pattern="[0-9]{10,15}" name="leader_phone" value="{{ old('leader_phone') }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (10-15 digit untuk koordinasi status)">
+                                <p class="text-[11px] text-slate-400 mt-1">Minimal 10 digit angka (contoh: 081234567890)</p>
                             </div>
                         </div>
 
@@ -453,6 +455,31 @@
             return; // Don't proceed if form is invalid
         }
 
+        // Validasi Panjang Nomor WhatsApp Ketua (10-15 digit)
+        const leaderPhone = document.querySelector('input[name="leader_phone"]');
+        if (leaderPhone && (leaderPhone.value.trim().length < 10 || leaderPhone.value.trim().length > 15)) {
+            leaderPhone.focus();
+            leaderPhone.setCustomValidity('Nomor WhatsApp Ketua harus terdiri dari 10 sampai 15 digit angka.');
+            leaderPhone.reportValidity();
+            return;
+        } else if (leaderPhone) {
+            leaderPhone.setCustomValidity('');
+        }
+
+        // Validasi Panjang Nomor WhatsApp Guru Pembimbing (10-15 digit jika status Siswa)
+        const teacherPhone = document.getElementById('teacher_phone');
+        const teacherSec = document.getElementById('teacherSection');
+        if (teacherPhone && !teacherSec.classList.contains('hidden')) {
+            if (teacherPhone.value.trim().length < 10 || teacherPhone.value.trim().length > 15) {
+                teacherPhone.focus();
+                teacherPhone.setCustomValidity('Nomor WhatsApp Guru Pembimbing harus terdiri dari 10 sampai 15 digit angka.');
+                teacherPhone.reportValidity();
+                return;
+            } else {
+                teacherPhone.setCustomValidity('');
+            }
+        }
+
         // Gather Data
         const status = document.querySelector('input[name="applicant_status"]:checked')?.value || '-';
         const program = document.querySelector('input[name="program_type"]:checked')?.value || '-';
@@ -505,6 +532,29 @@
         formSection.style.overflow = '';
         formSection.style.pointerEvents = '';
     }
+
+    // Filter input WhatsApp/Telepon agar hanya menerima digit angka (0-9) secara realtime
+    document.addEventListener('input', function(e) {
+        if (e.target.matches('input[type="tel"], input[name="leader_phone"], input[name="teacher_phone"], #teacher_phone')) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        }
+    });
+
+    document.addEventListener('keypress', function(e) {
+        if (e.target.matches('input[type="tel"], input[name="leader_phone"], input[name="teacher_phone"], #teacher_phone')) {
+            if (e.charCode !== 0 && (e.charCode < 48 || e.charCode > 57)) {
+                e.preventDefault();
+            }
+        }
+    });
+
+    document.addEventListener('paste', function(e) {
+        if (e.target.matches('input[type="tel"], input[name="leader_phone"], input[name="teacher_phone"], #teacher_phone')) {
+            setTimeout(() => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            }, 0);
+        }
+    });
 
     // Ensure form data is fully visible before actual POST submission
     document.getElementById('registrationForm').addEventListener('submit', function() {
