@@ -123,6 +123,37 @@ class QuotaService
     }
 
     /**
+     * Tandai pendaftaran sebagai Selesai (Completed) dan lepas kuota bidang.
+     */
+    public function completeRegistration(Registration $registration, $adminId)
+    {
+        return DB::transaction(function () use ($registration, $adminId) {
+            $period = self::getActivePeriod();
+
+            if ($registration->status === 'approved' && $registration->department_id) {
+                $neededSlots = max(1, $registration->participant_count);
+                $slotQuota = SlotQuota::where('department_id', $registration->department_id)
+                    ->where('period', $period)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($slotQuota) {
+                    $slotQuota->quota_used = max(0, $slotQuota->quota_used - $neededSlots);
+                    $slotQuota->save();
+                }
+            }
+
+            $registration->update([
+                'status' => 'completed',
+                'verified_by' => $adminId,
+                'verified_at' => now(),
+            ]);
+
+            return $registration;
+        });
+    }
+
+    /**
      * Sinkronisasi total kuota terpakai bidang berdasarkan registrasi disetujui aktual di DB.
      */
     public static function syncDepartmentQuotas()

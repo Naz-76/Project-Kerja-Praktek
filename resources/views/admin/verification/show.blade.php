@@ -31,6 +31,10 @@
                     <span class="px-4 py-2 bg-rose-100 text-rose-800 border border-rose-300 rounded-xl text-xs font-bold flex items-center gap-2">
                         <i class="fa-solid fa-circle-xmark"></i> Status: Ditolak
                     </span>
+                @elseif($registration->status == 'completed')
+                    <span class="px-4 py-2 bg-sky-100 text-sky-800 border border-sky-300 rounded-xl text-xs font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-flag-checkered"></i> Status: Selesai
+                    </span>
                 @endif
             </div>
         </div>
@@ -100,7 +104,7 @@
             </div>
         </div>
 
-        @if($registration->status == 'approved')
+        @if($registration->status == 'approved' || $registration->status == 'completed')
             @if($registration->supervisor_name)
             <div class="p-5 bg-blue-50/70 border border-blue-200 rounded-2xl text-xs text-blue-950 space-y-1">
                 <span class="font-bold flex items-center gap-2 font-heading text-[#014495]"><i class="fa-solid fa-user-tie"></i> Pembimbing Lapangan:</span>
@@ -205,7 +209,7 @@
                 </a>
             @endif
         </div>
-
+        
         <!-- Panel Aksi Verifikasi, Penempatan Bidang & Upload Surat Balasan Terintegrasi -->
         <div class="p-8 bg-slate-900 text-white rounded-3xl border border-slate-800 space-y-6 shadow-xl">
             <h3 class="font-heading text-base sm:text-lg font-bold text-white flex items-center gap-2">
@@ -252,7 +256,7 @@
                             
                             <div>
                                 <label class="block text-[10px] font-semibold text-slate-400 mb-1">No. WA Pembimbing</label>
-                                <input type="text" id="supervisorPhone" name="supervisor_phone" value="{{ old('supervisor_phone', $registration->supervisor_phone) }}" placeholder="08xx..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <input type="tel" inputmode="numeric" pattern="[0-9]*" id="supervisorPhone" name="supervisor_phone" value="{{ old('supervisor_phone', $registration->supervisor_phone) }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="08xx..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             </div>
                         </div>
                     </div>
@@ -300,6 +304,24 @@
                         <i class="fa-solid fa-circle-xmark"></i> Konfirmasi Ditolak & Simpan
                     </button>
                 </form>
+
+                @if($registration->status == 'approved')
+                <!-- Form Selesai / Completed (Hanya tampil untuk pendaftar yang sudah Diterima) -->
+                <form action="{{ route('admin.verification.complete', $registration->id) }}" method="POST" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-3 md:col-span-2">
+                    @csrf
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <span class="font-bold text-xs text-sky-400 uppercase tracking-wider block font-heading flex items-center gap-1.5">
+                                <i class="fa-solid fa-flag-checkered"></i> Tandai / Ubah Ke SELESAI
+                            </span>
+                            <p class="text-[11px] text-slate-400 mt-1">Gunakan opsi ini apabila masa kegiatan magang/PKL telah selesai. Kuota bidang terkait akan otomatis dibebaskan.</p>
+                        </div>
+                        <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menandai status pengajuan ini sebagai SELESAI?')" class="px-5 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading shrink-0 active:scale-[0.98]">
+                            <i class="fa-solid fa-flag-checkered"></i> Konfirmasi Selesai & Simpan
+                        </button>
+                    </div>
+                </form>
+                @endif
             </div>
         </div>
     </div>

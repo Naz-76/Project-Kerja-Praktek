@@ -97,7 +97,7 @@ Aplikasi web terpadu berbasis **Laravel 11** untuk mendigitalisasi proses pendaf
 
 ### 1. Masuk ke Direktori Project
 ```bash
-cd "sistem-pendaftaran-diskominfo-V2.2"
+cd "Project-Kerja-Praktek"
 ```
 
 ### 2. Install Dependensi PHP & Frontend

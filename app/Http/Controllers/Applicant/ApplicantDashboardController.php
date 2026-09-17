@@ -56,10 +56,12 @@ class ApplicantDashboardController extends Controller
         $user = Auth::user();
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|regex:/^[0-9]+$/|min:10|max:16',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'current_password' => 'nullable|required_with:password',
             'password' => 'nullable|string|min:8|confirmed',
+        ], [
+            'phone.regex' => 'Nomor WhatsApp hanya boleh berisi angka (0-9).',
         ]);
 
         if ($request->boolean('delete_avatar') && $user->avatar) {

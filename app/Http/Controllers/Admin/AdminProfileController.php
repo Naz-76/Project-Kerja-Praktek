@@ -21,7 +21,7 @@ class AdminProfileController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'nullable|string|max:20',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'current_password' => 'nullable|required_with:password',
             'password' => 'nullable|string|min:8|confirmed',
@@ -47,7 +47,9 @@ class AdminProfileController extends Controller
         }
 
         $admin->name = $validated['name'];
-        $admin->phone = $validated['phone'];
+        if ($request->has('phone')) {
+            $admin->phone = $validated['phone'];
+        }
         $admin->save();
 
         return back()->with('success', 'Profil Admin berhasil diperbarui!');

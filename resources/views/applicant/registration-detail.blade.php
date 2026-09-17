@@ -31,11 +31,15 @@
                     <span class="px-4 py-2 bg-rose-100 text-rose-800 border border-rose-300 rounded-xl text-xs font-bold flex items-center gap-2">
                         <i class="fa-solid fa-circle-xmark"></i> DITOLAK
                     </span>
+                @elseif($registration->status == 'completed')
+                    <span class="px-4 py-2 bg-sky-100 text-sky-800 border border-sky-300 rounded-xl text-xs font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-flag-checkered"></i> SELESAI
+                    </span>
                 @endif
             </div>
         </div>
 
-        @if($registration->status == 'approved')
+        @if($registration->status == 'approved' || $registration->status == 'completed')
             @if($registration->supervisor_name)
             <div class="p-4 bg-sky-50 border border-sky-200 rounded-xl text-xs text-sky-900 space-y-1">
                 <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-user-tie text-sky-600"></i> Pembimbing Lapangan Anda:</span>
@@ -62,7 +66,7 @@
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
                 <span class="text-slate-500 block mb-1">Bidang Penempatan Final</span>
                 <span class="font-bold text-slate-900 text-sm">
-                    @if($registration->status == 'approved')
+                    @if($registration->status == 'approved' || $registration->status == 'completed')
                         {{ $registration->department->name ?? 'Belum Ditentukan' }}
                     @elseif($registration->status == 'rejected')
                         <span class="text-rose-600">Tidak Ditempatkan</span>
