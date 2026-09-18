@@ -12,11 +12,11 @@
     </div>
 
     <!-- Main Card -->
-    <div class="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-xl space-y-8">
+    <div class="bg-white p-4 sm:p-8 lg:p-10 rounded-3xl border border-slate-200 shadow-xl space-y-8">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-            <div>
+            <div class="min-w-0 max-w-full">
                 <span class="text-xs font-bold text-[#014495] uppercase tracking-wider font-heading">{{ $registration->applicant_status }} — Program {{ $registration->program_type }}</span>
-                <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 mt-0.5">{{ $registration->institution->institution_name ?? '-' }}</h1>
+                <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 mt-0.5 break-words">{{ $registration->institution->institution_name ?? '-' }}</h1>
             </div>
             <div>
                 @if($registration->status == 'pending')
@@ -178,12 +178,21 @@
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach($registration->documents as $doc)
-                    <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-2xl flex items-center justify-between">
-                        <div>
-                            <span class="font-bold text-slate-800 text-xs uppercase block font-heading">{{ str_replace('_', ' ', $doc->document_category) }}</span>
-                            <span class="text-[11px] text-slate-500 font-mono">{{ $doc->file_name }}</span>
+                    <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 hover:bg-slate-50 hover:border-slate-300 transition-all">
+                        <div class="min-w-0 flex-1 space-y-1">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center text-xs shrink-0">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+                                <span class="font-bold text-slate-800 text-xs uppercase font-heading truncate">
+                                    {{ str_replace('_', ' ', $doc->document_category) }}
+                                </span>
+                            </div>
+                            <span class="text-[11px] text-slate-500 font-mono break-all block pl-9" title="{{ $doc->file_name }}">
+                                {{ $doc->file_name }}
+                            </span>
                         </div>
-                        <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="px-3.5 py-2 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 font-heading shadow-sm">
+                        <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="w-full sm:w-auto px-4 py-2.5 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all inline-flex items-center justify-center gap-1.5 font-heading shadow-sm shrink-0 active:scale-[0.98]">
                             <i class="fa-solid fa-eye"></i> Lihat PDF
                         </a>
                     </div>
@@ -192,122 +201,206 @@
         </div>
 
         <!-- File Surat Balasan Digital saat ini -->
-        <div class="p-5 bg-slate-50/80 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div>
+        <div class="p-4 sm:p-5 bg-slate-50/80 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div class="min-w-0 flex-1">
                 <span class="font-bold text-slate-800 block font-heading">Surat Balasan Digital Resmi:</span>
                 @if($registration->replyLetter)
-                    <span class="text-emerald-700 font-semibold flex items-center gap-1.5 mt-1">
-                        <i class="fa-solid fa-file-pdf"></i> Terunggah pada {{ $registration->replyLetter->uploaded_at ? $registration->replyLetter->uploaded_at->format('d M Y H:i') : '-' }}
+                    <span class="text-emerald-700 font-semibold flex items-center gap-1.5 mt-1 break-all">
+                        <i class="fa-solid fa-file-pdf shrink-0"></i> Terunggah pada {{ $registration->replyLetter->uploaded_at ? $registration->replyLetter->uploaded_at->format('d M Y H:i') : '-' }}
                     </span>
                 @else
-                    <span class="text-slate-400 italic">Belum diunggah. Unggah saat konfirmasi keputusan di bawah.</span>
+                    <span class="text-slate-400 italic block mt-0.5">Belum diunggah. Unggah saat konfirmasi keputusan di bawah.</span>
                 @endif
             </div>
             @if($registration->replyLetter)
-                <a href="{{ Storage::url($registration->replyLetter->file_path) }}" target="_blank" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all font-heading flex items-center gap-2 shadow-sm">
+                <a href="{{ Storage::url($registration->replyLetter->file_path) }}" target="_blank" class="w-full sm:w-auto px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all font-heading inline-flex items-center justify-center gap-2 shadow-sm shrink-0 active:scale-[0.98]">
                     <i class="fa-solid fa-download"></i> Unduh Surat Balasan PDF
                 </a>
             @endif
         </div>
         
         <!-- Panel Aksi Verifikasi, Penempatan Bidang & Upload Surat Balasan Terintegrasi -->
-        <div class="p-8 bg-slate-900 text-white rounded-3xl border border-slate-800 space-y-6 shadow-xl">
+        <div class="p-5 sm:p-8 bg-slate-900 text-white rounded-3xl border border-slate-800 space-y-6 shadow-xl">
             <h3 class="font-heading text-base sm:text-lg font-bold text-white flex items-center gap-2">
                 <i class="fa-solid fa-sliders text-[#2F90E1]"></i> Aksi Keputusan Verifikasi & Penempatan
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Form Approve / Penempatan Bidang & Pesan Penerimaan -->
-                <form action="{{ route('admin.verification.approve', $registration->id) }}" method="POST" enctype="multipart/form-data" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-4">
-                    @csrf
-                    <span class="font-bold text-xs text-emerald-400 uppercase tracking-wider block font-heading">Setujui / Ubah Ke DITERIMA</span>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Bidang Penempatan Final *</label>
-                        <select name="department_id" id="departmentSelect" required class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            <option value="">-- Pilih Bidang Diskominfo --</option>
-                            @foreach($departments as $dept)
-                                @php $q = $dept->slotQuotas->first(); @endphp
-                                <option value="{{ $dept->id }}" {{ $registration->department_id == $dept->id || $registration->preferred_department_id == $dept->id ? 'selected' : '' }}>
-                                    {{ $dept->name }} (Sisa Kuota: {{ $q ? $q->quota_remaining : 0 }} slot)
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    <div class="p-4 bg-slate-700/50 rounded-xl space-y-4 border border-slate-700">
+                @if($registration->status == 'pending')
+                    <!-- Form Approve / Penempatan Bidang & Pesan Penerimaan (Hanya tampil jika berstatus Pending / Menunggu Verifikasi) -->
+                    <form action="{{ route('admin.verification.approve', $registration->id) }}" method="POST" enctype="multipart/form-data" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-4">
+                        @csrf
+                        <span class="font-bold text-xs text-emerald-400 uppercase tracking-wider block font-heading">Setujui / Konfirmasi DITERIMA</span>
                         <div>
-                            <label class="block text-xs font-semibold text-emerald-400 mb-1.5"><i class="fa-solid fa-user-tie"></i> Pilih Pembimbing Lapangan</label>
-                            <select id="supervisorSelect" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option value="">-- Pilih Pembimbing (Otomatis Isi Form) --</option>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Bidang Penempatan Final *</label>
+                            <select name="department_id" id="departmentSelect" required class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="">-- Pilih Bidang Diskominfo --</option>
+                                @foreach($departments as $dept)
+                                    @php $q = $dept->slotQuotas->first(); @endphp
+                                    <option value="{{ $dept->id }}" {{ $registration->department_id == $dept->id || $registration->preferred_department_id == $dept->id ? 'selected' : '' }}>
+                                        {{ $dept->name }} (Sisa Kuota: {{ $q ? $q->quota_remaining : 0 }} slot)
+                                    </option>
+                                @endforeach
                             </select>
-                            <p class="text-[10px] text-slate-400 mt-1">Daftar pembimbing menyesuaikan dengan Bidang Penempatan yang dipilih.</p>
+                        </div>
+                        
+                        <div class="p-4 bg-slate-700/50 rounded-xl space-y-4 border border-slate-700">
+                            <div>
+                                <label class="block text-xs font-semibold text-emerald-400 mb-1.5"><i class="fa-solid fa-user-tie"></i> Pilih Pembimbing Lapangan</label>
+                                <select id="supervisorSelect" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    <option value="">-- Pilih Pembimbing (Otomatis Isi Form) --</option>
+                                </select>
+                                <p class="text-[10px] text-slate-400 mt-1">Daftar pembimbing menyesuaikan dengan Bidang Penempatan yang dipilih.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Nama Lengkap Pembimbing</label>
+                                    <input type="text" id="supervisorName" name="supervisor_name" value="{{ old('supervisor_name', $registration->supervisor_name) }}" placeholder="Ketik atau pilih dari atas..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Jabatan Pembimbing</label>
+                                    <input type="text" id="supervisorPosition" name="supervisor_position" value="{{ old('supervisor_position', $registration->supervisor_position) }}" placeholder="Jabatan..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">No. WA Pembimbing</label>
+                                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="supervisorPhone" name="supervisor_phone" value="{{ old('supervisor_phone', $registration->supervisor_phone) }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="08xx..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="sm:col-span-2">
-                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Nama Lengkap Pembimbing</label>
-                                <input type="text" id="supervisorName" name="supervisor_name" value="{{ old('supervisor_name', $registration->supervisor_name) }}" placeholder="Ketik atau pilih dari atas..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            </div>
-
-                            <div>
-                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Jabatan Pembimbing</label>
-                                <input type="text" id="supervisorPosition" name="supervisor_position" value="{{ old('supervisor_position', $registration->supervisor_position) }}" placeholder="Jabatan..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">No. WA Pembimbing</label>
-                                <input type="tel" inputmode="numeric" pattern="[0-9]*" id="supervisorPhone" name="supervisor_phone" value="{{ old('supervisor_phone', $registration->supervisor_phone) }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="08xx..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Kotak Pesan/Catatan Penerimaan (Opsional)</label>
-                        @php
-                            $defaultMessage = '';
-                            if (!$registration->acceptance_message) {
-                                if (strtolower($registration->applicant_status) == 'siswa') {
-                                    $defaultMessage = 'Selamat, pengajuan Anda telah disetujui. Silakan bawa dokumen fisik Surat Pengantar Asli dari sekolah saat pertama kali masuk ke kantor Diskominfo Garut.';
-                                } else {
-                                    $defaultMessage = 'Selamat, pengajuan Anda telah disetujui. Silakan bawa dokumen fisik Surat Pengantar Asli dan Surat Rekomendasi Bakesbangpol saat pertama kali masuk ke kantor Diskominfo Garut.';
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Kotak Pesan/Catatan Penerimaan (Opsional)</label>
+                            @php
+                                $defaultMessage = '';
+                                if (!$registration->acceptance_message) {
+                                    if (strtolower($registration->applicant_status) == 'siswa') {
+                                        $defaultMessage = 'Selamat, pengajuan Anda telah disetujui. Silakan bawa dokumen fisik Surat Pengantar Asli dari sekolah saat pertama kali masuk ke kantor Diskominfo Garut.';
+                                    } else {
+                                        $defaultMessage = 'Selamat, pengajuan Anda telah disetujui. Silakan bawa dokumen fisik Surat Pengantar Asli dan Surat Rekomendasi Bakesbangpol saat pertama kali masuk ke kantor Diskominfo Garut.';
+                                    }
                                 }
-                            }
-                        @endphp
-                        <textarea name="acceptance_message" rows="4" placeholder="Tuliskan petunjuk / ucapan selamat penerimaan untuk pendaftar..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed">{{ old('acceptance_message', $registration->acceptance_message ?: $defaultMessage) }}</textarea>
+                            @endphp
+                            <textarea name="acceptance_message" rows="4" placeholder="Tuliskan petunjuk / ucapan selamat penerimaan untuk pendaftar..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed">{{ old('acceptance_message', $registration->acceptance_message ?: $defaultMessage) }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Upload File Surat Balasan PDF (Opsional)</label>
+                            <input type="file" name="reply_letter" accept=".pdf" class="w-full text-xs text-slate-400 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-slate-700 file:text-slate-200">
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading active:scale-[0.98]">
+                            <i class="fa-solid fa-circle-check"></i> Konfirmasi Diterima & Simpan
+                        </button>
+                    </form>
+                @elseif($registration->status == 'approved')
+                    <!-- Informasi Ringkasan Pendaftar Diterima (Elegan, Lengkap & Full Width) -->
+                    <div class="p-6 sm:p-8 bg-slate-800/90 border border-emerald-500/40 rounded-3xl space-y-6 md:col-span-2 shadow-lg">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700/80 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg border border-emerald-500/30 shrink-0">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm sm:text-base text-white font-heading">Pendaftar Telah Resmi DITERIMA</h4>
+                                    <span class="text-[11px] text-emerald-400 font-medium">Berkas telah diverifikasi dan kuota bidang berhasil dialokasikan</span>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-xl border border-emerald-500/30 self-start sm:self-auto flex items-center gap-1.5 font-heading">
+                                <i class="fa-solid fa-check"></i> Terverifikasi & Ditempatkan
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <!-- Bidang Definitif -->
+                            <div class="p-4 bg-slate-900/70 rounded-2xl border border-slate-700/70 space-y-1">
+                                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block font-heading">Bidang Penempatan Definitif</span>
+                                <span class="font-extrabold text-emerald-400 text-sm block">{{ $registration->department->name ?? '-' }}</span>
+                            </div>
+
+                            <!-- Pembimbing Lapangan -->
+                            <div class="p-4 bg-slate-900/70 rounded-2xl border border-slate-700/70 space-y-1">
+                                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block font-heading">Pembimbing Lapangan</span>
+                                <span class="font-bold text-white text-sm block">{{ $registration->supervisor_name ?: '-' }}</span>
+                                @if($registration->supervisor_position)
+                                    <span class="text-slate-400 block text-[11px] font-medium">{{ $registration->supervisor_position }}</span>
+                                @endif
+                                @if($registration->supervisor_phone)
+                                    <span class="text-emerald-400 block text-[11px] font-medium mt-0.5"><i class="fa-brands fa-whatsapp mr-1"></i>{{ $registration->supervisor_phone }}</span>
+                                @endif
+                            </div>
+
+                            <!-- Dokumen Surat Balasan -->
+                            <div class="p-4 bg-slate-900/70 rounded-2xl border border-slate-700/70 space-y-1.5 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block font-heading">Surat Balasan Digital</span>
+                                    <span class="text-slate-300 text-[11px] block">
+                                        {{ $registration->replyLetter ? 'Dokumen balasan resmi telah diterbitkan' : 'Belum ada surat balasan diunggah' }}
+                                    </span>
+                                </div>
+                                @if($registration->replyLetter)
+                                    <a href="{{ Storage::url($registration->replyLetter->file_path) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 font-bold font-heading">
+                                        <i class="fa-solid fa-file-pdf"></i> Unduh Surat Balasan PDF &rarr;
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($registration->acceptance_message)
+                        <div class="p-4 bg-slate-900/70 rounded-2xl border border-slate-700/70 space-y-1 text-xs">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block font-heading flex items-center gap-1.5">
+                                <i class="fa-solid fa-comment-dots text-emerald-400"></i> Catatan & Arahan Penerimaan dari Admin
+                            </span>
+                            <p class="text-slate-200 leading-relaxed italic text-[11px] bg-slate-950/40 p-3 rounded-xl border border-slate-800">
+                                "{{ $registration->acceptance_message }}"
+                            </p>
+                        </div>
+                        @endif
                     </div>
+                @endif
 
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Upload File Surat Balasan PDF (Opsional)</label>
-                        <input type="file" name="reply_letter" accept=".pdf" class="w-full text-xs text-slate-400 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-slate-700 file:text-slate-200">
+                @if($registration->status == 'pending')
+                    <!-- Form Reject (Hanya tampil jika berstatus Pending / Menunggu Verifikasi) -->
+                    <form id="formRejectRegistration" action="{{ route('admin.verification.reject', $registration->id) }}" method="POST" enctype="multipart/form-data" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-4">
+                        @csrf
+                        <span class="font-bold text-xs text-rose-400 uppercase tracking-wider block font-heading">Tolak / Ubah Ke DITOLAK</span>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Alasan Penolakan *</label>
+                            <textarea id="rejectionReasonInput" name="rejection_reason" required rows="4" placeholder="Tuliskan alasan penolakan secara jelas..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed">{{ old('rejection_reason', $registration->rejection_reason) }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Upload File Surat Penolakan PDF (Opsional)</label>
+                            <input type="file" name="reply_letter" accept=".pdf" class="w-full text-xs text-slate-400 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-slate-700 file:text-slate-200">
+                        </div>
+
+                        <button type="button" onclick="handleRejectClick()" class="w-full py-3 bg-[#8B0000] hover:bg-[#6b0000] text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading active:scale-[0.98]">
+                            <i class="fa-solid fa-circle-xmark"></i> Konfirmasi Ditolak & Simpan
+                        </button>
+                    </form>
+                @elseif($registration->status == 'rejected')
+                    <div class="p-6 bg-slate-800/90 border border-rose-500/40 rounded-2xl md:col-span-2 text-center py-8 space-y-2">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 mx-auto flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-white font-heading">Pengajuan Ini Berstatus DITOLAK</h4>
+                        <p class="text-xs text-rose-300 max-w-md mx-auto leading-relaxed"><strong>Alasan Penolakan:</strong> {{ $registration->rejection_reason ?? 'Tidak memenuhi kualifikasi / kuota bidang telah penuh.' }}</p>
                     </div>
-
-                    <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading active:scale-[0.98]">
-                        <i class="fa-solid fa-circle-check"></i> Konfirmasi Diterima & Simpan
-                    </button>
-                </form>
-
-                <!-- Form Reject -->
-                <form action="{{ route('admin.verification.reject', $registration->id) }}" method="POST" enctype="multipart/form-data" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-4">
-                    @csrf
-                    <span class="font-bold text-xs text-rose-400 uppercase tracking-wider block font-heading">Tolak / Ubah Ke DITOLAK</span>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Alasan Penolakan *</label>
-                        <textarea name="rejection_reason" required rows="4" placeholder="Tuliskan alasan penolakan secara jelas..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed">{{ old('rejection_reason', $registration->rejection_reason) }}</textarea>
+                @elseif($registration->status == 'completed')
+                    <div class="p-6 bg-slate-800/90 border border-sky-500/40 rounded-2xl md:col-span-2 text-center py-8 space-y-2">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 mx-auto flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-white font-heading">Program Magang / PKL Telah Selesai</h4>
+                        <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">Pendaftar ini telah menyelesaikan seluruh masa pelaksanaan di Diskominfo Garut. Kuota bidang telah dilepaskan kembali.</p>
                     </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Upload File Surat Penolakan PDF (Opsional)</label>
-                        <input type="file" name="reply_letter" accept=".pdf" class="w-full text-xs text-slate-400 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-slate-700 file:text-slate-200">
-                    </div>
-
-                    <button type="submit" onclick="return confirm('Apakah Anda yakin ingin mengubah status menjadi DITOLAK? Kuota bidang terkait akan otomatis dikembalikan.')" class="w-full py-3 bg-[#8B0000] hover:bg-[#6b0000] text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading active:scale-[0.98]">
-                        <i class="fa-solid fa-circle-xmark"></i> Konfirmasi Ditolak & Simpan
-                    </button>
-                </form>
+                @endif
 
                 @if($registration->status == 'approved')
                 <!-- Form Selesai / Completed (Hanya tampil untuk pendaftar yang sudah Diterima) -->
-                <form action="{{ route('admin.verification.complete', $registration->id) }}" method="POST" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-3 md:col-span-2">
+                <form id="formCompleteRegistration" action="{{ route('admin.verification.complete', $registration->id) }}" method="POST" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-3 md:col-span-2">
                     @csrf
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
@@ -316,7 +409,7 @@
                             </span>
                             <p class="text-[11px] text-slate-400 mt-1">Gunakan opsi ini apabila masa kegiatan magang/PKL telah selesai. Kuota bidang terkait akan otomatis dibebaskan.</p>
                         </div>
-                        <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menandai status pengajuan ini sebagai SELESAI?')" class="px-5 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading shrink-0 active:scale-[0.98]">
+                        <button type="button" onclick="handleCompleteClick()" class="px-5 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading shrink-0 active:scale-[0.98]">
                             <i class="fa-solid fa-flag-checkered"></i> Konfirmasi Selesai & Simpan
                         </button>
                     </div>
@@ -387,5 +480,49 @@
             supervisorSelect.addEventListener('change', fillSupervisorData);
         }
     });
+
+    // Custom Modal Confirmation Handlers (Design Guidelines Compliant)
+    function handleRejectClick() {
+        const form = document.getElementById('formRejectRegistration');
+        if (!form) return;
+        
+        // Cek validasi form HTML5 (misal textarea wajib diisi)
+        if (!form.reportValidity()) {
+            return;
+        }
+
+        openCustomConfirm({
+            title: 'Konfirmasi Tolak Pengajuan',
+            message: 'Apakah Anda yakin ingin mengubah status menjadi <strong class="text-rose-400 font-bold">DITOLAK</strong>?<br><span class="text-[11px] text-slate-400 mt-1.5 block">Kuota bidang terkait akan otomatis dikembalikan ke kuota tersedia.</span>',
+            icon: 'fa-solid fa-triangle-exclamation',
+            iconColor: 'text-rose-400',
+            iconBg: 'bg-rose-500/20',
+            iconBorder: 'border-rose-500/30',
+            btnText: 'Ya, Tolak Pengajuan',
+            btnColor: 'bg-[#8B0000] hover:bg-[#6b0000]',
+            onConfirm: function() {
+                form.submit();
+            }
+        });
+    }
+
+    function handleCompleteClick() {
+        const form = document.getElementById('formCompleteRegistration');
+        if (!form) return;
+
+        openCustomConfirm({
+            title: 'Konfirmasi Selesai Program',
+            message: 'Apakah Anda yakin ingin menandai status pengajuan ini sebagai <strong class="text-sky-400 font-bold">SELESAI</strong>?<br><span class="text-[11px] text-slate-400 mt-1.5 block">Kuota bidang terkait akan otomatis dibebaskan kembali.</span>',
+            icon: 'fa-solid fa-flag-checkered',
+            iconColor: 'text-sky-400',
+            iconBg: 'bg-sky-500/20',
+            iconBorder: 'border-sky-500/30',
+            btnText: 'Ya, Tandai Selesai',
+            btnColor: 'bg-sky-600 hover:bg-sky-700',
+            onConfirm: function() {
+                form.submit();
+            }
+        });
+    }
 </script>
 @endpush

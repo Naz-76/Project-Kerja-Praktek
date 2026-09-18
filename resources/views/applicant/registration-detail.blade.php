@@ -39,6 +39,20 @@
             </div>
         </div>
 
+        @if($registration->status == 'completed')
+            <div class="p-5 bg-gradient-to-r from-sky-50 via-blue-50 to-indigo-50 border-2 border-sky-300 rounded-2xl text-xs text-sky-950 space-y-2 shadow-sm">
+                <div class="flex items-center gap-2.5 font-bold text-sm text-[#014495]">
+                    <span class="w-8 h-8 rounded-xl bg-[#014495] text-white flex items-center justify-center shrink-0 shadow">
+                        <i class="fa-solid fa-award text-base"></i>
+                    </span>
+                    <span>Program Selesai — Selamat!</span>
+                </div>
+                <p class="text-slate-700 leading-relaxed font-medium pl-10">
+                    Selamat Anda telah menyelesaikan kegiatan sesuai program <strong class="text-slate-900 font-bold">{{ $registration->program_type }}</strong> di Dinas Komunikasi dan Informatika Kabupaten Garut. Silakan bawa berkas surat administrasi (seperti surat penilaian / lembar nilai) ke kantor Diskominfo Kabupaten Garut untuk pengesahan akhir oleh Pembimbing Lapangan.
+                </p>
+            </div>
+        @endif
+
         @if($registration->status == 'approved' || $registration->status == 'completed')
             @if($registration->supervisor_name)
             <div class="p-4 bg-sky-50 border border-sky-200 rounded-xl text-xs text-sky-900 space-y-1">

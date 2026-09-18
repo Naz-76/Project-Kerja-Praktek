@@ -12,7 +12,6 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        \App\Services\QuotaService::syncDepartmentQuotas();
         $period = \App\Services\QuotaService::getActivePeriod();
 
         $totalRegistrations = Registration::count();
@@ -96,5 +95,36 @@ class AdminDashboardController extends Controller
             'allRegistrations',
             'period'
         ));
+    }
+
+    /**
+     * Endpoint polling hening untuk mengecek pengajuan baru tanpa reload paksa
+     */
+    public function checkUpdates(Request $request)
+    {
+        $lastId = (int) $request->query('last_id', 0);
+        $pendingCount = (int) $request->query('pending_count', -1);
+
+        $latestRegistration = Registration::latest('id')->first();
+        $currentLatestId = $latestRegistration ? $latestRegistration->id : 0;
+        $currentPendingCount = Registration::where('status', 'pending')->count();
+
+        $hasNew = false;
+        $newCount = 0;
+
+        if ($lastId > 0 && $currentLatestId > $lastId) {
+            $hasNew = true;
+            $newCount = Registration::where('id', '>', $lastId)->count();
+        } elseif ($pendingCount >= 0 && $currentPendingCount > $pendingCount) {
+            $hasNew = true;
+            $newCount = $currentPendingCount - $pendingCount;
+        }
+
+        return response()->json([
+            'has_new' => $hasNew,
+            'new_count' => $newCount,
+            'latest_id' => $currentLatestId,
+            'pending_count' => $currentPendingCount,
+        ]);
     }
 }

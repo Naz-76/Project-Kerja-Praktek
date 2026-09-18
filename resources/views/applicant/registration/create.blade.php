@@ -19,9 +19,14 @@
 
             {{-- Server-side Validation Errors --}}
             @if($errors->any())
-                <div class="p-5 bg-rose-50 border border-rose-300 rounded-2xl text-sm text-rose-800 space-y-2 shadow-sm">
-                    <p class="font-bold flex items-center gap-2 font-heading"><i class="fa-solid fa-triangle-exclamation text-rose-600"></i> Terdapat kesalahan pada data yang Anda kirim:</p>
-                    <ul class="list-disc pl-5 space-y-1 text-xs font-medium">
+                <div id="serverErrorAlert" class="p-5 bg-rose-50 border border-rose-300 rounded-2xl text-sm text-rose-800 space-y-2 shadow-sm transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <p class="font-bold flex items-center gap-2 font-heading"><i class="fa-solid fa-triangle-exclamation text-rose-600"></i> Terdapat kesalahan pada data yang Anda kirim:</p>
+                        <button type="button" onclick="dismissErrorAlert()" class="text-rose-500 hover:text-rose-800 p-1 text-xs" title="Tutup Notifikasi">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+                    <ul class="list-disc pl-5 space-y-1 text-xs font-medium" id="serverErrorList">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -159,7 +164,8 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-700 mb-1.5">NIS / NIM <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="participants[0][nis_nim]" value="{{ old('participants.0.nis_nim') }}" required class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa">
+                                    <input type="text" name="participants[0][nis_nim]" value="{{ old('participants.0.nis_nim') }}" required minlength="5" maxlength="50" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="Nomor Induk Siswa / Mahasiswa (min. 5 digit)">
+                                    <p class="text-[11px] text-slate-400 mt-1">Minimal 5 digit/karakter</p>
                                 </div>
                             </div>
                             <div>
@@ -183,7 +189,7 @@
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-600 mb-1">NIS / NIM <span class="text-rose-500">*</span></label>
-                                            <input type="text" name="participants[{{ $idx }}][nis_nim]" value="{{ $p['nis_nim'] ?? '' }}" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
+                                            <input type="text" name="participants[{{ $idx }}][nis_nim]" value="{{ $p['nis_nim'] ?? '' }}" required minlength="5" maxlength="50" placeholder="Min. 5 digit" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
                                         </div>
                                     </div>
                                 </div>
@@ -434,7 +440,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">NIS / NIM <span class="text-rose-500">*</span></label>
-                    <input type="text" name="participants[${idx}][nis_nim]" required class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
+                    <input type="text" name="participants[${idx}][nis_nim]" required minlength="5" maxlength="50" placeholder="Min. 5 digit" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm">
                 </div>
             </div>
         </div>
@@ -479,6 +485,25 @@
                 teacherPhone.setCustomValidity('');
             }
         }
+
+        // Validasi Tanggal Pelaksanaan: Tanggal Selesai harus setelah Tanggal Mulai
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const endDateInput = document.querySelector('input[name="end_date"]');
+        if (startDateInput && endDateInput && startDateInput.value && endDateInput.value) {
+            const startD = new Date(startDateInput.value);
+            const endD = new Date(endDateInput.value);
+            if (endD <= startD) {
+                endDateInput.focus();
+                endDateInput.setCustomValidity('Tanggal selesai pelaksanaan harus setelah tanggal mulai pelaksanaan.');
+                endDateInput.reportValidity();
+                return;
+            } else {
+                endDateInput.setCustomValidity('');
+            }
+        }
+
+        // Otomatis hilangkan notifikasi kesalahan input saat seluruh data sudah benar dan masuk ke tahap tinjau
+        dismissErrorAlert();
 
         // Gather Data
         const status = document.querySelector('input[name="applicant_status"]:checked')?.value || '-';
@@ -565,5 +590,43 @@
         formSection.style.overflow = '';
         formSection.style.pointerEvents = '';
     });
+
+    // Fungsi untuk menghilangkan notifikasi error secara halus
+    function dismissErrorAlert() {
+        const alertEl = document.getElementById('serverErrorAlert');
+        if (alertEl) {
+            alertEl.style.transition = 'all 0.3s ease';
+            alertEl.style.opacity = '0';
+            setTimeout(() => {
+                alertEl.style.display = 'none';
+            }, 300);
+        }
+    }
+
+    // Pantau perbaikan input form: jika semua sudah benar, hilangkan notifikasi error secara otomatis
+    function checkFormErrorsResolution() {
+        const form = document.getElementById('registrationForm');
+        if (!form) return;
+
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const endDateInput = document.querySelector('input[name="end_date"]');
+        let dateValid = true;
+
+        if (startDateInput && endDateInput && startDateInput.value && endDateInput.value) {
+            if (new Date(endDateInput.value) <= new Date(startDateInput.value)) {
+                dateValid = false;
+            } else {
+                endDateInput.setCustomValidity('');
+            }
+        }
+
+        // Jika semua input wajib terisi dan valid
+        if (form.checkValidity() && dateValid) {
+            dismissErrorAlert();
+        }
+    }
+
+    document.getElementById('registrationForm')?.addEventListener('input', checkFormErrorsResolution);
+    document.getElementById('registrationForm')?.addEventListener('change', checkFormErrorsResolution);
 </script>
 @endsection

@@ -47,9 +47,60 @@
             color: #ffffff;
             font-weight: 700;
         }
+
+        /* Custom Horizontal Scrollbar */
+        .overflow-x-auto {
+            scrollbar-width: thin;
+            scrollbar-color: #94a3b8 #f1f5f9;
+        }
+        .overflow-x-auto::-webkit-scrollbar {
+            height: 7px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 9999px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 9999px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Drag-to-Scroll Cursor */
+        .overflow-x-auto.cursor-grab {
+            cursor: grab;
+        }
+        .overflow-x-auto.cursor-grabbing {
+            cursor: grabbing;
+            user-select: none;
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col md:flex-row">
+
+    <!-- Realtime Data Notification Pill (Opsi 3: Tanpa Hard Reload) -->
+    <div id="admin-new-data-pill" class="fixed top-4 right-4 z-[9999] hidden transition-all duration-300 transform translate-y-[-20px] opacity-0 max-w-sm sm:max-w-md">
+        <div class="bg-slate-900/95 text-white border border-blue-400/40 shadow-2xl backdrop-blur-md px-4 py-3 rounded-2xl flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-base shrink-0 animate-bounce">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+                <p class="font-heading font-bold text-xs text-white truncate" id="admin-pill-text">Ada pengajuan pendaftaran baru masuk!</p>
+                <p class="text-[10px] text-slate-400">Pembaruan data tersedia di sistem</p>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button type="button" onclick="window.location.reload()" class="px-3 py-1.5 bg-[#014495] hover:bg-[#002f6c] text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1 font-heading active:scale-[0.98]">
+                    <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                    <span>Muat Ulang</span>
+                </button>
+                <button type="button" onclick="dismissNewDataPill()" class="w-7 h-7 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-colors text-xs" title="Tutup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Mobile Top Header Bar (With Hamburger Menu Icon) -->
     <header class="md:hidden bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-50 border-b border-slate-800">
@@ -115,6 +166,11 @@
             <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800 text-slate-300 {{ request()->routeIs('admin.reports.*') ? 'sidebar-active text-white' : '' }}">
                 <i class="fa-solid fa-chart-column text-sm text-purple-400 w-5"></i>
                 <span>Laporan & Rekapitulasi</span>
+            </a>
+
+            <a href="{{ route('admin.api.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800 text-slate-300 {{ request()->routeIs('admin.api.*') ? 'sidebar-active text-white' : '' }}">
+                <i class="fa-solid fa-code text-sm text-cyan-400 w-5"></i>
+                <span>Integrasi REST API</span>
             </a>
 
             <a href="{{ route('admin.profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800 text-slate-300 {{ request()->routeIs('admin.profile') ? 'sidebar-active text-white' : '' }}">
@@ -200,55 +256,71 @@
             }
         }
 
-        // Auto reload when navigated back/forward from browser cache (BFCache)
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
+        // =========================================================================
+        // REALTIME UPDATE CHECKER (OPSI 3: SILENT BACKGROUND POLLING TANPA RELOAD PAKSA)
+        // =========================================================================
+        let lastCheckedId = 0;
+        let lastPendingCount = -1;
 
-        function isUserTyping() {
-            const active = document.activeElement;
-            if (active) {
-                const tag = active.tagName.toLowerCase();
-                if (tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable) {
-                    return true;
-                }
+        function dismissNewDataPill() {
+            const pill = document.getElementById('admin-new-data-pill');
+            if (pill) {
+                pill.classList.add('translate-y-[-20px]', 'opacity-0');
+                setTimeout(() => pill.classList.add('hidden'), 300);
             }
-            // Cegah reload jika terdapat input/textarea yang sedang memiliki nilai pada form aktif
-            const formInputs = document.querySelectorAll('form input:not([type="hidden"]):not([type="submit"]):not([type="button"]), form textarea');
-            for (let i = 0; i < formInputs.length; i++) {
-                if (formInputs[i].value && formInputs[i].value.trim() !== '') {
-                    return true;
-                }
-            }
-            return false;
         }
 
-        // Auto reload when user switches back to this tab (hanya jika form tidak sedang diisi)
-        document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'visible' && !isUserTyping()) {
-                window.location.reload();
+        function showNewDataPill(message) {
+            const pill = document.getElementById('admin-new-data-pill');
+            const text = document.getElementById('admin-pill-text');
+            if (pill && text) {
+                text.textContent = message || 'Ada pengajuan pendaftaran baru masuk!';
+                pill.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    pill.classList.remove('translate-y-[-20px]', 'opacity-0');
+                });
             }
-        });
+        }
 
-        // Smart Auto-Refresh: reload every 60 seconds, pause if admin is typing in a form
-        (function() {
-            const REFRESH_INTERVAL = 60;
-            let countdown = REFRESH_INTERVAL;
+        async function checkAdminUpdates() {
+            try {
+                const url = new URL("{{ route('admin.check-updates') }}", window.location.origin);
+                if (lastCheckedId > 0) url.searchParams.set('last_id', lastCheckedId);
+                if (lastPendingCount >= 0) url.searchParams.set('pending_count', lastPendingCount);
 
-            setInterval(function() {
-                if (document.visibilityState === 'hidden') return;
-                if (isUserTyping()) {
-                    countdown = REFRESH_INTERVAL;
-                    return;
+                const response = await fetch(url.toString(), {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Inisialisasi awal saat pertama kali dijalankan di halaman
+                    if (lastCheckedId === 0) {
+                        lastCheckedId = data.latest_id;
+                        lastPendingCount = data.pending_count;
+                        return;
+                    }
+
+                    if (data.has_new) {
+                        const countText = data.new_count > 1 ? `${data.new_count} pengajuan baru masuk!` : 'Pengajuan baru masuk!';
+                        showNewDataPill(`Ada ${countText}`);
+                        lastCheckedId = data.latest_id;
+                        lastPendingCount = data.pending_count;
+                    }
                 }
-                countdown--;
-                if (countdown <= 0) {
-                    window.location.reload();
-                }
-            }, 1000);
-        })();
+            } catch (err) {
+                // Silent fail: tidak mengganggu admin jika koneksi jaringan terputus sesaat
+            }
+        }
+
+        // Pengecekan hening setiap 45 detik (tanpa memuat ulang halaman secara paksa)
+        setInterval(checkAdminUpdates, 45000);
+        // Jalankan pengecekan inisialisasi awal setelah DOM siap
+        document.addEventListener('DOMContentLoaded', checkAdminUpdates);
 
         // Auto-dismiss flash notifications
         document.addEventListener('DOMContentLoaded', function () {
@@ -259,8 +331,143 @@
                     setTimeout(function () { el.remove(); }, 500);
                 }, 4000);
             });
+
+            // Global Drag-to-Scroll for all horizontally scrollable tables
+            const scrollContainers = document.querySelectorAll('.overflow-x-auto');
+            scrollContainers.forEach(container => {
+                const updateGrabState = () => {
+                    if (container.scrollWidth > container.clientWidth) {
+                        container.classList.add('cursor-grab');
+                    } else {
+                        container.classList.remove('cursor-grab');
+                    }
+                };
+                updateGrabState();
+                window.addEventListener('resize', updateGrabState);
+
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                container.addEventListener('mousedown', (e) => {
+                    if (e.target.closest('a, button, input, select, textarea, form')) return;
+                    isDown = true;
+                    container.classList.add('cursor-grabbing');
+                    container.classList.remove('cursor-grab');
+                    startX = e.pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    container.classList.remove('cursor-grabbing');
+                    updateGrabState();
+                });
+
+                container.addEventListener('mouseup', () => {
+                    isDown = false;
+                    container.classList.remove('cursor-grabbing');
+                    updateGrabState();
+                });
+
+                container.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - container.offsetLeft;
+                    const walk = (x - startX) * 1.5;
+                    container.scrollLeft = scrollLeft - walk;
+                });
+            });
+        });
+
+        // =========================================================================
+        // GLOBAL CUSTOM CONFIRMATION MODAL (DESIGN GUIDELINES COMPLIANT)
+        // =========================================================================
+        let currentConfirmCallback = null;
+
+        function openCustomConfirm({ title, message, icon, iconColor, iconBg, iconBorder, btnText, btnColor, onConfirm }) {
+            const modal = document.getElementById('customConfirmModal');
+            const card = document.getElementById('customConfirmCard');
+            const titleEl = document.getElementById('customConfirmTitle');
+            const messageEl = document.getElementById('customConfirmMessage');
+            const iconWrapper = document.getElementById('customConfirmIconWrapper');
+            const iconEl = document.getElementById('customConfirmIcon');
+            const submitBtn = document.getElementById('customConfirmSubmitBtn');
+
+            if (!modal) return;
+
+            titleEl.textContent = title || 'Konfirmasi Tindakan';
+            messageEl.innerHTML = message || 'Apakah Anda yakin ingin melanjutkan tindakan ini?';
+            
+            iconEl.className = icon || 'fa-solid fa-triangle-exclamation';
+            iconWrapper.className = `w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-lg border ${iconBg || 'bg-amber-500/20'} ${iconColor || 'text-amber-400'} ${iconBorder || 'border-amber-500/30'}`;
+
+            submitBtn.textContent = btnText || 'Ya, Lanjutkan';
+            submitBtn.className = `px-4 py-2.5 text-white font-bold text-xs rounded-xl shadow-md transition-all font-heading active:scale-[0.98] ${btnColor || 'bg-[#014495] hover:bg-[#002f6c]'}`;
+
+            currentConfirmCallback = onConfirm;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            requestAnimationFrame(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeCustomConfirm() {
+            const modal = document.getElementById('customConfirmModal');
+            const card = document.getElementById('customConfirmCard');
+            if (!modal) return;
+
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                currentConfirmCallback = null;
+            }, 200);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitBtn = document.getElementById('customConfirmSubmitBtn');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', () => {
+                    if (typeof currentConfirmCallback === 'function') {
+                        currentConfirmCallback();
+                    }
+                    closeCustomConfirm();
+                });
+            }
         });
     </script>
+
+    <!-- Global Custom Confirmation Modal (Design Guidelines Compliant) -->
+    <div id="customConfirmModal" class="fixed inset-0 z-[99999] hidden items-center justify-center p-4">
+        <!-- Backdrop Blur -->
+        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity" onclick="closeCustomConfirm()"></div>
+        
+        <!-- Modal Card -->
+        <div class="relative bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl max-w-md w-full p-6 text-center space-y-5 transform transition-all duration-200 scale-95 opacity-0 z-10" id="customConfirmCard">
+            <div id="customConfirmIconWrapper" class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-lg border">
+                <i id="customConfirmIcon" class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            
+            <div class="space-y-1.5">
+                <h3 id="customConfirmTitle" class="font-heading font-extrabold text-lg sm:text-xl text-white">Konfirmasi Tindakan</h3>
+                <div id="customConfirmMessage" class="text-xs text-slate-300 leading-relaxed max-w-xs mx-auto">Apakah Anda yakin ingin melanjutkan tindakan ini?</div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button type="button" onclick="closeCustomConfirm()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs rounded-xl border border-slate-700 transition-all font-heading">
+                    Batal
+                </button>
+                <button type="button" id="customConfirmSubmitBtn" class="px-4 py-2.5 text-white font-bold text-xs rounded-xl shadow-md transition-all font-heading active:scale-[0.98]">
+                    Ya, Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
 @stack('scripts')
 </body>
 </html>

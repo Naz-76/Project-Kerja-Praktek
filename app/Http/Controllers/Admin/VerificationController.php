@@ -195,12 +195,12 @@ class VerificationController extends Controller
                     $mail->cc($teacherEmail);
                 }
 
-                $mail->send($mailable);
-                Log::info("Email notifikasi status [{$registration->status}] berhasil dikirim ke {$recipientEmail} untuk Registrasi #{$registration->id}");
+                $mail->queue($mailable);
+                Log::info("Email notifikasi status [{$registration->status}] berhasil dimasukkan ke antrean queue untuk {$recipientEmail} (Registrasi #{$registration->id})");
             }
         } catch (\Throwable $e) {
-            // Catat log jika pengiriman gagal tanpa membatalkan proses verifikasi database
-            Log::error("Gagal mengirim email notifikasi status Registrasi #{$registration->id}: " . $e->getMessage());
+            // Catat log jika antrean email gagal tanpa membatalkan proses verifikasi database
+            Log::error("Gagal memasukkan email notifikasi status Registrasi #{$registration->id} ke queue: " . $e->getMessage());
         }
     }
 }

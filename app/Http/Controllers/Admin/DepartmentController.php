@@ -18,7 +18,17 @@ class DepartmentController extends Controller
             $q->where('period', $period);
         }, 'fieldSupervisors'])->get();
 
-        return view('admin.departments.index', compact('departments', 'period'));
+        $stats = [
+            'total_departments' => $departments->count(),
+            'total_quota' => $departments->sum(fn($d) => $d->slotQuotas->first()->quota_total ?? 0),
+            'total_used' => $departments->sum(fn($d) => $d->slotQuotas->first()->quota_used ?? 0),
+            'total_remaining' => max(0, $departments->sum(fn($d) => ($d->slotQuotas->first()->quota_total ?? 0) - ($d->slotQuotas->first()->quota_used ?? 0))),
+            'total_supervisors' => $departments->sum(fn($d) => $d->fieldSupervisors->count()),
+        ];
+
+        $supervisors = \App\Models\FieldSupervisor::with('department')->latest()->get();
+
+        return view('admin.departments.index', compact('departments', 'period', 'stats', 'supervisors'));
     }
 
     public function store(Request $request)
