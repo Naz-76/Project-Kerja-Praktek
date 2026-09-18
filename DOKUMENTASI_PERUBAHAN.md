@@ -1,0 +1,138 @@
+# Dokumentasi Rekapitulasi Perubahan Sistem
+**Portal Magang & PKL (PORMA) — Diskominfo Kabupaten Garut**
+*Tanggal Pembaruan: 18 September 2026*
+
+---
+
+## 📌 Ringkasan Eksekutif
+Dokumentasi ini merangkum seluruh pembaruan antarmuka (UI/UX), peningkatan responsivitas perangkat seluler (*mobile-friendly*), implementasi modal pop-up kustom berbasis *Design Guidelines*, eliminasi *hard-reload* otomatis, serta penguatan logika bisnis kuota dan backend yang telah diterapkan pada aplikasi.
+
+---
+
+## 1. 📱 Responsivitas Mobile & Tampilan Verifikasi Berkas
+
+### A. Perbaikan Kartu Dokumen & Tombol "Lihat PDF" (Anti-Overflow)
+- **Masalah Sebelumnya:** Pada pengujian di layar ponsel pintar (lebar layar $\le 390\text{px}$), nama berkas yang panjang dan tanpa spasi (contoh: `Surat_Pengantar_Universitas_Padjadjaran_(UNPAD).pdf`) memaksa kontainer teks melebar. Akibatnya, tombol **"Lihat PDF"** terdorong keluar dari garis tepi kartu (*overflow*).
+- **Perubahan yang Diterapkan (`resources/views/admin/verification/show.blade.php`):**
+  - Mengubah susunan tata letak dari flex baris statis menjadi **responsif adaptif** (`flex flex-col sm:flex-row sm:items-center justify-between gap-3.5`).
+  - **Di Layar HP ($< 640\text{px}$):** Kartu berkas bertransisi rapi menjadi vertikal dengan tombol "Lihat PDF" membentang penuh (`w-full`), sangat nyaman ditekan jari (*touch-friendly*), dan dijamin 100% berada di dalam batas kartu.
+  - **Di Layar Tablet / Desktop ($\ge 640\text{px}$):** Tetap berjejer horizontal elegan dengan tombol di sisi kanan (`sm:w-auto`).
+  - Menambahkan utilitas `min-w-0`, `flex-1`, dan `break-all` agar nama file dokumen panjang terpotong rapi dengan *text wrapping* tanpa merusak batas kontainer.
+  - Menambahkan badge ikon PDF merah (`fa-file-pdf`) dan efek *micro-interaction hover*.
+
+### B. Penyempurnaan Kartu Surat Balasan Resmi
+- Dibuat senada dengan kartu dokumen di atasnya: mendukung susunan adaptif mobile (`flex-col sm:flex-row`), teks info terstruktur rapi, dan tombol unduh yang responsif.
+
+### C. Optimasi Kontainer & Tipografi Mobile
+- Padding kontainer utama disesuaikan menjadi `p-4 sm:p-8 lg:p-10` agar lebih proporsional di layar seluler.
+- Nama instansi/kampus yang panjang ditambahkan `break-words` untuk mencegah teks terpotong di tepi layar.
+
+---
+
+## 2. 🎨 Modal Pop-up Kustom (Design Guidelines Compliant)
+
+### A. Penggantian Dialog Bawaan Browser (`confirm()`)
+- **Masalah Sebelumnya:** Aksi penolakan dan penyelesaian pengajuan masih menggunakan dialog standar bawaan browser (`127.0.0.1:8000 says: Apakah Anda yakin...`) yang kaku dan tidak selaras dengan identitas visual portal.
+- **Perubahan yang Diterapkan (`resources/views/layouts/admin.blade.php`):**
+  - Dibuat komponen modal konfirmasi kustom global (`#customConfirmModal`) dengan tema gelap elegan Diskominfo:
+    - *Backdrop:* `bg-slate-950/80` dengan efek `backdrop-blur-sm`.
+    - *Kartu Modal:* `bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl`.
+    - *Animasi:* Transisi mikro `scale-95 opacity-0` $\rightarrow$ `scale-100 opacity-100`.
+    - *Aksesibilitas:* Menutup otomatis jika tombol **Batal** ditekan atau area luar kartu diklik.
+
+### B. Integrasi pada Form Aksi (`resources/views/admin/verification/show.blade.php`)
+1. **Konfirmasi Tolak Pengajuan:**
+   - Ikon peringatan rose/merah (`fa-solid fa-triangle-exclamation`).
+   - Penegasan teks bahwa status akan menjadi **DITOLAK** dan kuota bidang terkait otomatis dikembalikan.
+   - Tombol eksekusi merah Diskominfo (`bg-[#8B0000] hover:bg-[#6b0000]`).
+   - Dilengkapi *native form validation check* (`form.reportValidity()`) sehingga bila alasan tolak belum diisi, form langsung memberi tahu pengguna sebelum modal muncul.
+2. **Konfirmasi Tandai Selesai Program:**
+   - Ikon bendera program selesai (`fa-solid fa-flag-checkered`).
+   - Penegasan status **SELESAI** dan pelepasan kuota secara otomatis.
+   - Tombol eksekusi bertema biru langit (`bg-sky-600 hover:bg-sky-700`).
+
+---
+
+## 3. ⚡ Stabilitas Layar & Notifikasi Latar Belakang (Tanpa Auto-Reload Paksa)
+
+### A. Eliminasi Auto-Refresh Paksa
+- **Masalah Sebelumnya:** Halaman web melakukan reload otomatis setiap selang waktu tertentu (`setInterval 60 detik`) atau saat pengguna berpindah tab (`visibilitychange`), menyebabkan layar berkedip, posisi scroll melompat ke atas, dan risiko kehilangan ketikan data pada form yang sedang diisi.
+- **Solusi:** Seluruh skrip reload paksa di `resources/views/layouts/app.blade.php` dan `resources/views/layouts/admin.blade.php` telah dinonaktifkan.
+
+### B. Indikator Notifikasi Modern (*Silent Polling*)
+- **Endpoint Silent Check:** Disediakan route `GET /admin/check-updates` pada `app/Http/Controllers/Admin/AdminDashboardController.php` yang memeriksa pengajuan baru di latar belakang tanpa me-refresh browser.
+- **Floating Notification Pill:** Jika ada berkas baru masuk dari pemohon, muncul lencana mengambang di pojok kanan atas panel admin:
+  ```
+  🔔 Ada pengajuan pendaftaran baru masuk!
+  [Muat Ulang]  [✕]
+  ```
+- Admin memiliki kendali penuh untuk menekan **Muat Ulang** saat pekerjaan selesai atau menutup lencana tanpa terganggu.
+
+---
+
+## 4. 📋 Dashboard Pengguna & Alur Pendaftaran
+
+### A. Visualisasi Alur Status & Tahapan
+- Mempertahankan alur *stepper* verifikasi pendaftaran asli:
+  - `Tahap 1: Verifikasi Berkas`
+  - `Tahap 2: Wawancara / Penempatan Bidang`
+  - `Tahap 3: Penerbitan Surat Keputusan / Balasan`
+- Penempatan tombol **Daftar Ulang** dipisahkan secara rapi (tidak menempel di dalam blok notifikasi penolakan).
+- Blok riwayat pendaftaran ditambahkan untuk memudahkan pemohon melihat histori pengajuan sebelumnya.
+
+### B. Indikator Visual Tabel Scrollable
+- Pada tabel data panjang (seperti daftar anggota tim dan tabel kuota), ditambahkan petunjuk visual *horizontal scroll cues* agar pengguna di layar seluler langsung mengetahui bahwa tabel dapat digeser ke samping.
+
+---
+
+## 5. 🛡️ Keutuhan Backend, Kuota & Integritas Data
+
+1. **Sinkronisasi Kuota Otomatis:**
+   - **Penerimaan (Approved):** Kuota bidang terpakai bertambah, sisa kuota berkurang.
+   - **Penolakan (Rejected):** Kuota bidang yang sebelumnya teralokasi langsung dikembalikan secara otomatis.
+   - **Penyelesaian (Completed):** Kuota dibebaskan kembali untuk periode selanjutnya.
+2. **Atomic Lock & Pencegahan Race Condition:**
+   - Menggunakan locking database untuk mencegah bentrok pendaftaran bersamaan saat kuota tersisa 1 slot.
+3. **Integrasi REST API & API Key Management:**
+   - Endpoint terproteksi middleware API Key untuk integrasi sistem eksternal.
+
+---
+
+## 6. 🧪 Hasil Pengujian & Verifikasi (Automated Tests)
+
+Pengujian otomatis dijalankan melalui PHPUnit / Laravel Test Suite:
+```bash
+php artisan test
+```
+
+**Hasil Pengujian:**
+```text
+PASS  Tests\Unit\ExampleTest
+✓ that true is true
+
+PASS  Tests\Feature\ExampleTest
+✓ the application returns a successful response
+
+PASS  Tests\Feature\QuotaServiceTest
+✓ approve registration decrements quota
+✓ quota exceeded throws exception
+✓ reject approved registration restores quota
+✓ complete approved registration releases quota
+✓ unique composite index prevents duplicate department period
+✓ atomic lock prevents concurrent submission
+
+PASS  Tests\Feature\SupervisorEvaluationFeaturesTest
+✓ registration rejects nis nim with less than 5 characters
+✓ registration accepts nis nim with 5 or more characters
+✓ applicant dashboard and detail display completion message
+✓ admin can view department quotas with stats
+✓ admin reports filters with applicant status and date range
+✓ api endpoints reject unauthorized access
+✓ api endpoints return data with valid api key
+✓ admin can add multiple supervisors simultaneously
+✓ admin can check updates without hard reload
+
+Tests:    17 passed (79 assertions)
+Duration: 1.07s
+```
+**Status: 100% Lulus (17 tests, 79 assertions).**

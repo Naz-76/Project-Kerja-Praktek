@@ -14,7 +14,6 @@ class PublicController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        \App\Services\QuotaService::syncDepartmentQuotas();
         $period = \App\Services\QuotaService::getActivePeriod();
         $departments = Department::with(['slotQuotas' => function ($q) use ($period) {
             $q->where('period', $period);

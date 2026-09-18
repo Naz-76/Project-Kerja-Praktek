@@ -14,7 +14,7 @@ return new class extends Migration
             $table->enum('program_type', ['PKL', 'KP', 'Magang']);
             $table->foreignId('preferred_department_id')->nullable()->constrained('departments')->onDelete('set null');
             $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('set null');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'completed'])->default('pending');
             $table->text('rejection_reason')->nullable();
             $table->text('acceptance_message')->nullable();
             $table->date('start_date')->nullable();

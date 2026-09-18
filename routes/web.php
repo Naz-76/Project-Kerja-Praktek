@@ -53,6 +53,7 @@ Route::middleware(['auth', 'no-cache'])->group(function () {
 */
 Route::middleware(['auth', 'admin', 'no-cache'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/check-updates', [AdminDashboardController::class, 'checkUpdates'])->name('admin.check-updates');
 
     // Verifikasi & Penempatan Bidang
     Route::get('/verifikasi', [VerificationController::class, 'index'])->name('admin.verification.index');
@@ -73,6 +74,12 @@ Route::middleware(['auth', 'admin', 'no-cache'])->prefix('admin')->group(functio
 
     // Rekapitulasi Laporan
     Route::get('/laporan', [ReportController::class, 'index'])->name('admin.reports.index');
+
+    // Integrasi REST API (Data Sharing Sistem Eksternal)
+    Route::get('/api-integrasi', [\App\Http\Controllers\Admin\ApiIntegrationController::class, 'index'])->name('admin.api.index');
+    Route::post('/api-integrasi', [\App\Http\Controllers\Admin\ApiIntegrationController::class, 'store'])->name('admin.api.store');
+    Route::patch('/api-integrasi/{id}/toggle', [\App\Http\Controllers\Admin\ApiIntegrationController::class, 'toggle'])->name('admin.api.toggle');
+    Route::delete('/api-integrasi/{id}', [\App\Http\Controllers\Admin\ApiIntegrationController::class, 'destroy'])->name('admin.api.destroy');
 
     // Profil Admin
     Route::get('/profil', [\App\Http\Controllers\Admin\AdminProfileController::class, 'index'])->name('admin.profile');

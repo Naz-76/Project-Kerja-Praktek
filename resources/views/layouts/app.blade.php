@@ -323,55 +323,7 @@
             }
         });
 
-        // Auto reload when navigated back/forward from browser cache (BFCache)
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
 
-        function isUserTyping() {
-            const active = document.activeElement;
-            if (active) {
-                const tag = active.tagName.toLowerCase();
-                if (tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable) {
-                    return true;
-                }
-            }
-            // Cegah reload jika terdapat input/textarea yang sedang memiliki nilai pada form aktif
-            const formInputs = document.querySelectorAll('form input:not([type="hidden"]):not([type="submit"]):not([type="button"]), form textarea');
-            for (let i = 0; i < formInputs.length; i++) {
-                if (formInputs[i].value && formInputs[i].value.trim() !== '') {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Auto reload when user switches back to this tab (hanya jika form tidak sedang diisi)
-        document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'visible' && !isUserTyping()) {
-                window.location.reload();
-            }
-        });
-
-        // Smart Auto-Refresh: reload every 60 seconds, pause if user is typing
-        (function() {
-            const REFRESH_INTERVAL = 60;
-            let countdown = REFRESH_INTERVAL;
-
-            setInterval(function() {
-                if (document.visibilityState === 'hidden') return;
-                if (isUserTyping()) {
-                    countdown = REFRESH_INTERVAL;
-                    return;
-                }
-                countdown--;
-                if (countdown <= 0) {
-                    window.location.reload();
-                }
-            }, 1000);
-        })();
 
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('[data-flash]').forEach(function (el) {

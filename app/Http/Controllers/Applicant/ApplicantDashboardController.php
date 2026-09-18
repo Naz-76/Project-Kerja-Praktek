@@ -18,7 +18,7 @@ class ApplicantDashboardController extends Controller
             ->latest()
             ->get();
 
-        $activeRegistration = $registrations->whereIn('status', ['pending', 'approved', 'rejected'])->first();
+        $activeRegistration = $registrations->whereIn('status', ['pending', 'approved', 'completed', 'rejected'])->first();
 
         return view('applicant.dashboard', compact('registrations', 'activeRegistration'));
     }

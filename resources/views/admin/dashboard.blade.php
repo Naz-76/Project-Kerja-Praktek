@@ -149,10 +149,10 @@
     </div>
 
     <!-- Tabel 1: Antrean Pendaftar Menunggu Verifikasi -->
-    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-md space-y-5">
+    <div class="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-md space-y-4 sm:space-y-5">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
             <div>
-                <h2 class="font-heading text-lg font-bold text-slate-900 flex items-center gap-2">
+                <h2 class="font-heading text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-clock text-amber-500"></i> Antrean Pendaftar Menunggu Verifikasi & Penempatan
                 </h2>
                 <p class="text-xs text-slate-500 mt-0.5">Tinjau kelengkapan dokumen, identitas ketua/anggota, serta kontak pendamping sekolah/kampus.</p>
@@ -162,7 +162,17 @@
             </a>
         </div>
 
-        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+        <!-- Petunjuk Geser Tabel (Desktop & Tablet) -->
+        <div class="hidden md:flex items-center justify-between text-[11px] text-slate-500 bg-blue-50/70 px-3.5 py-1.5 rounded-xl border border-blue-100">
+            <span class="inline-flex items-center gap-1.5 font-medium text-[#014495]">
+                <i class="fa-solid fa-arrows-left-right text-xs"></i>
+                <span>Tabel dapat digeser ke samping: Klik & tarik mouse atau gulir horizontal untuk melihat kolom lengkap</span>
+            </span>
+            <span class="text-slate-400 text-[10px]">Tersedia {{ $pendingRegistrations->count() }} data</span>
+        </div>
+
+        <!-- Tampilan Desktop (Tabel Standar) -->
+        <div class="hidden md:block overflow-x-auto rounded-2xl border border-slate-200">
             <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200 font-heading">
                     <tr>
@@ -271,6 +281,81 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- Tampilan Mobile (Card List Khusus Layar HP - Tanpa Perlu Geser Kanan-Kiri) -->
+        <div class="block md:hidden divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-white overflow-hidden text-xs">
+            @forelse($pendingRegistrations as $reg)
+                <div class="p-4 space-y-3 hover:bg-slate-50/50 transition-colors">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 block">Antrean #{{ $loop->iteration }}</span>
+                            <h3 class="font-heading font-bold text-sm text-slate-900 mt-0.5">{{ $reg->leader->full_name ?? $reg->user->name }}</h3>
+                            <span class="text-slate-500 font-mono text-[11px]">NIS/NIM: {{ $reg->leader->nis_nim ?? '-' }}</span>
+                        </div>
+                        @if($reg->status == 'pending')
+                            <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1 shrink-0">
+                                <i class="fa-solid fa-clock text-[9px]"></i> Pending
+                            </span>
+                        @elseif($reg->status == 'approved')
+                            <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px] inline-flex items-center gap-1 shrink-0">
+                                <i class="fa-solid fa-circle-check text-[9px]"></i> Diterima
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+                        @if(strtolower($reg->applicant_status) == 'siswa')
+                            <span class="px-2 py-0.5 bg-blue-50 text-[#014495] rounded-md border border-blue-200 font-bold text-[10px]">
+                                <i class="fa-solid fa-school mr-1"></i> Siswa PKL
+                            </span>
+                        @else
+                            <span class="px-2 py-0.5 bg-indigo-50 text-indigo-800 rounded-md border border-indigo-200 font-bold text-[10px]">
+                                <i class="fa-solid fa-graduation-cap mr-1"></i> Mahasiswa
+                            </span>
+                        @endif
+                        <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md font-medium text-[10px]">
+                            {{ $reg->participant_count > 1 ? $reg->participant_count . ' Orang' : 'Individu' }}
+                        </span>
+                        @if($reg->start_date && $reg->end_date)
+                            <span class="text-slate-500 text-[10px] ml-auto">
+                                <i class="fa-regular fa-calendar text-[#2F90E1]"></i> {{ \Carbon\Carbon::parse($reg->start_date)->format('d/m') }} - {{ \Carbon\Carbon::parse($reg->end_date)->format('d/m/y') }}
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80 space-y-1 text-[11px]">
+                        <div class="flex items-start gap-1.5">
+                            <i class="fa-solid fa-building-columns text-slate-400 mt-0.5 shrink-0"></i>
+                            <div>
+                                <span class="font-semibold text-slate-800">{{ $reg->institution->institution_name ?? '-' }}</span>
+                                <span class="text-slate-500 block text-[10px]">Jurusan: {{ $reg->leader->major ?? '-' }}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-1.5 pt-1 border-t border-slate-200/50">
+                            <i class="fa-solid fa-layer-group text-slate-400 mt-0.5 shrink-0"></i>
+                            <div>
+                                @if($reg->department)
+                                    <span class="font-bold text-emerald-700">{{ $reg->department->name }}</span>
+                                @else
+                                    <span class="text-slate-400 italic">Belum Ditempatkan</span>
+                                    @if($reg->preferredDepartment)
+                                        <span class="text-[#014495] font-semibold text-[10px] block">(Pilihan: {{ $reg->preferredDepartment->name }})</span>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Full Width di Layar HP -->
+                    <a href="{{ route('admin.verification.show', $reg->id) }}" class="w-full py-2.5 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl text-xs transition-all font-heading shadow-sm flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-sliders text-xs"></i>
+                        <span>{{ in_array($reg->status, ['approved', 'completed']) ? 'Ubah / Detail Penempatan' : 'Tinjau Berkas Pengajuan' }}</span>
+                    </a>
+                </div>
+            @empty
+                <div class="p-8 text-center text-slate-400 font-medium">Tidak ada pendaftar yang menunggu verifikasi.</div>
+            @endforelse
         </div>
     </div>
 
