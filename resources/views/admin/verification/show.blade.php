@@ -332,19 +332,33 @@
                                 @endif
                             </div>
 
-                            <!-- Dokumen Surat Balasan -->
-                            <div class="p-4 bg-slate-900/70 rounded-2xl border border-slate-700/70 space-y-1.5 flex flex-col justify-between">
+                            <!-- Dokumen Surat Balasan & Form Upload Susulan -->
+                            <div class="p-4 bg-slate-900/70 rounded-2xl border border-slate-700/70 space-y-2.5 flex flex-col justify-between">
                                 <div>
-                                    <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block font-heading">Surat Balasan Digital</span>
-                                    <span class="text-slate-300 text-[11px] block">
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block font-heading">Surat Balasan Digital Resmi</span>
+                                    <span class="text-slate-300 text-[11px] block mt-0.5">
                                         {{ $registration->replyLetter ? 'Dokumen balasan resmi telah diterbitkan' : 'Belum ada surat balasan diunggah' }}
                                     </span>
+                                    @if($registration->replyLetter)
+                                        <a href="{{ Storage::url($registration->replyLetter->file_path) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 font-bold font-heading mt-1">
+                                            <i class="fa-solid fa-file-pdf"></i> Unduh Surat Balasan PDF &rarr;
+                                        </a>
+                                    @endif
                                 </div>
-                                @if($registration->replyLetter)
-                                    <a href="{{ Storage::url($registration->replyLetter->file_path) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 font-bold font-heading">
-                                        <i class="fa-solid fa-file-pdf"></i> Unduh Surat Balasan PDF &rarr;
-                                    </a>
-                                @endif
+
+                                <!-- Form Upload / Update Surat Balasan Susulan -->
+                                <form action="{{ route('admin.verification.upload-reply-letter', $registration->id) }}" method="POST" enctype="multipart/form-data" class="pt-2 border-t border-slate-800 space-y-1.5">
+                                    @csrf
+                                    <label class="block text-[10px] font-semibold text-emerald-400">
+                                        <i class="fa-solid fa-cloud-arrow-up mr-1"></i> {{ $registration->replyLetter ? 'Perbarui Surat Balasan (PDF):' : 'Unggah Surat Balasan Susulan (PDF):' }}
+                                    </label>
+                                    <div class="flex flex-col sm:flex-row gap-1.5">
+                                        <input type="file" name="reply_letter" accept=".pdf" required class="w-full text-[10px] text-slate-400 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-slate-800 file:text-slate-200 file:text-[10px]">
+                                        <button type="submit" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[11px] transition-all font-heading shrink-0 shadow-sm inline-flex items-center justify-center gap-1 active:scale-[0.98]">
+                                            <i class="fa-solid fa-check"></i> Simpan
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 

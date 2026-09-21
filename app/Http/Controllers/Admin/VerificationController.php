@@ -176,6 +176,44 @@ class VerificationController extends Controller
     }
 
     /**
+     * Upload atau perbarui file Surat Balasan PDF resmi secara susulan untuk pendaftar yang sudah DITERIMA.
+     */
+    public function uploadReplyLetter(Request $request, $id)
+    {
+        $request->validate([
+            'reply_letter' => 'required|file|mimes:pdf|max:10240',
+        ]);
+
+        $registration = Registration::findOrFail($id);
+
+        try {
+            // Hapus file surat balasan lama jika sudah ada sebelumnya
+            $existingLetter = \App\Models\ReplyLetter::where('registration_id', $registration->id)->first();
+            if ($existingLetter && $existingLetter->file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($existingLetter->file_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingLetter->file_path);
+            }
+
+            $file = $request->file('reply_letter');
+            $path = $file->store('reply_letters', 'public');
+            \App\Models\ReplyLetter::updateOrCreate(
+                ['registration_id' => $registration->id],
+                [
+                    'file_path' => $path,
+                    'uploaded_by' => Auth::id(),
+                    'uploaded_at' => now(),
+                ]
+            );
+
+            // Kirim notifikasi email ke Gmail pendaftar dengan lampiran/status surat balasan terbaru
+            $this->sendStatusEmail($registration);
+
+            return back()->with('success', 'File Surat Balasan Resmi berhasil diunggah/diperbarui.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengunggah surat balasan: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Mengirim notifikasi email status penerimaan / penolakan ke pendaftar secara aman.
      */
     protected function sendStatusEmail(Registration $registration): void
