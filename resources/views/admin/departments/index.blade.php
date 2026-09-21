@@ -5,26 +5,19 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Halaman -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <a href="{{ route('admin.dashboard') }}" class="text-xs font-semibold text-slate-500 hover:text-[#014495] inline-flex items-center gap-1 font-heading transition-colors">
                     <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
                 </a>
-                <span class="text-slate-300">•</span>
-                <span class="text-xs font-semibold text-slate-500">Administrasi Kantor</span>
             </div>
-            <h1 class="font-heading text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 Kelola Bidang & Kuota Magang
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 mt-1">
                 Atur daya tampung kuota peserta magang/PKL dan penugasan pembimbing lapangan di Diskominfo Garut.
             </p>
-        </div>
-        <div class="flex items-center gap-2 self-start sm:self-auto">
-            <span class="text-xs font-medium text-slate-600 bg-slate-100 px-3.5 py-2 rounded-2xl border border-slate-200">
-                <i class="fa-regular fa-calendar-check text-[#014495] mr-1"></i> Periode: <strong>{{ $period }}</strong>
-            </span>
         </div>
     </div>
 

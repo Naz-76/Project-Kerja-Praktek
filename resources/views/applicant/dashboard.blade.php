@@ -11,13 +11,6 @@
             <h1 class="font-heading text-2xl sm:text-4xl font-extrabold tracking-tight">Selamat Datang {{ auth()->user()->name }}!</h1>
             <p class="text-blue-50 text-xs sm:text-sm font-medium">Pantau status verifikasi berkas, penempatan bidang, dan unduh surat balasan digital Anda.</p>
         </div>
-        @if($activeRegistration)
-            <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('applicant.my-registration.show', $activeRegistration->id) }}" class="px-5 py-3 bg-[#014495] hover:bg-[#002f6c] text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2 text-xs font-heading active:scale-[0.98]">
-                    <i class="fa-solid fa-file-lines"></i> Rincian Pengajuan
-                </a>
-            </div>
-        @endif
     </div>
 
     <!-- Active Registration Section (Figma Reference: Beranda Pengguna 2.png) -->

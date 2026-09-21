@@ -136,3 +136,18 @@ Tests:    17 passed (79 assertions)
 Duration: 1.07s
 ```
 **Status: 100% Lulus (17 tests, 79 assertions).**
+
+---
+
+## 7. 🚀 Penyempurnaan Hasil Masukan Pengujian Blackbox (21 September 2026)
+
+1. **Upload Surat Balasan Digital Susulan untuk Pendaftar Diterima (*Approved*):**
+   - **File:** [`VerificationController.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/app/Http/Controllers/Admin/VerificationController.php) & [`show.blade.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/resources/views/admin/verification/show.blade.php).
+   - **Solusi:** Menambahkan route `admin.verification.upload-reply-letter` dan form upload susulan pada kartu berkas surat balasan resmi. Admin kini leluasa mengunggah atau mengganti file Surat Balasan PDF resmi secara susulan setelah proses persetujuan awal selesai (misal: saat mahasiswa selesai mengurus surat rekomendasi Bakesbangpol).
+2. **Pembersihan Redundansi Tombol di Dashboard Pendaftar:**
+   - **File:** [`dashboard.blade.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/resources/views/applicant/dashboard.blade.php).
+   - **Solusi:** Menghapus tombol "Rincian Pengajuan" di Welcome Banner atas, menyisakan 2 tautan rincian lainnya (pada footer kartu ringkasan dan kolom aksi tabel riwayat) agar banner lebih bersih dan terhindar dari tombol ganda.
+3. **Penyelarasan Header Halaman Kelola Bidang & Kuota:**
+   - **File:** [`index.blade.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/resources/views/admin/departments/index.blade.php).
+   - **Solusi:** Menghapus teks statis `• Administrasi Kantor` dan badge `Periode: 2026-Q3` serta kotak pembungkus putih pada header, sehingga header halaman ini kini seragam, bersih, dan konsisten dengan seluruh halaman admin lainnya.
+

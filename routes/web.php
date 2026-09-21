@@ -61,6 +61,7 @@ Route::middleware(['auth', 'admin', 'no-cache'])->prefix('admin')->group(functio
     Route::post('/verifikasi/{id}/approve', [VerificationController::class, 'approve'])->name('admin.verification.approve');
     Route::post('/verifikasi/{id}/reject', [VerificationController::class, 'reject'])->name('admin.verification.reject');
     Route::post('/verifikasi/{id}/complete', [VerificationController::class, 'complete'])->name('admin.verification.complete');
+    Route::post('/verifikasi/{id}/upload-surat-balasan', [VerificationController::class, 'uploadReplyLetter'])->name('admin.verification.upload-reply-letter');
 
     // Kelola Bidang & Kuota
     Route::get('/bidang-kuota', [DepartmentController::class, 'index'])->name('admin.departments.index');
