@@ -90,6 +90,11 @@ class RegistrationController extends Controller
             }
 
             DB::transaction(function () use ($request, $validated, $user) {
+                // Sinkronkan nomor WhatsApp ke profil akun pengguna jika belum ada atau berbeda
+                if ($user->phone !== $validated['leader_phone']) {
+                    $user->update(['phone' => $validated['leader_phone']]);
+                }
+
                 $participants = $request->input('participants');
                 $participantCount = count($participants);
 

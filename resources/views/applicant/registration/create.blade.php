@@ -170,8 +170,8 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
-                                <input type="tel" inputmode="numeric" minlength="10" maxlength="15" pattern="[0-9]{10,15}" name="leader_phone" value="{{ old('leader_phone') }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (10-15 digit untuk koordinasi status)">
-                                <p class="text-[11px] text-slate-400 mt-1">Minimal 10 digit angka (contoh: 081234567890)</p>
+                                <input type="tel" inputmode="numeric" minlength="10" maxlength="15" pattern="[0-9]{10,15}" name="leader_phone" value="{{ old('leader_phone', auth()->user()->phone) }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2F90E1] focus:border-[#014495] transition-all" placeholder="08xxxxxxxxxx (10-15 digit untuk koordinasi status)">
+                                <p class="text-[11px] text-slate-400 mt-1">Minimal 10 digit angka (otomatis tersinkron dengan profil Anda)</p>
                             </div>
                         </div>
 

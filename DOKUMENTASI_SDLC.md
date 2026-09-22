@@ -89,7 +89,7 @@ Dinas Komunikasi dan Informatika (Diskominfo) Kabupaten Garut menerima puluhan p
 | **FR-05** | Sistem menyediakan validasi berkas unggahan PDF Surat Pengantar (maksimal 5MB) dengan penyimpanan terenkripsi. | Calon Peserta |
 | **FR-06** | Sistem mencegah double-submission pendaftar jika masih memiliki berkas pengajuan berstatus aktif (*Pending* atau *Approved*). | Sistem / Pendaftar |
 | **FR-07** | Sistem menampilkan pelacakan status pendaftaran (*Pending*, *Approved*, *Rejected*, *Completed*) beserta catatan alasan admin dan kontak WhatsApp pembimbing lapangan. | Pendaftar |
-| **FR-08** | Sistem menyediakan panel admin terproteksi untuk meninjau berkas, menetapkan bidang penempatan, dan menugaskan pembimbing lapangan. | Administrator |
+| **FR-08** | Sistem menyediakan panel admin terproteksi untuk meninjau berkas, dengan verifikasi wajib penetapan bidang penempatan dan penunjukan pembimbing lapangan serta dialog konfirmasi pratinjau untuk mencegah human error. | Administrator |
 | **FR-09** | Sistem melakukan pemotongan kuota bidang otomatis secara proporsional sesuai jumlah anggota tim saat pengajuan disetujui (*Approve*). | Sistem / Administrator |
 | **FR-10** | Sistem mengembalikan kuota bidang secara otomatis jika berkas yang disetujui diubah menjadi ditolak (*Reject*). | Sistem / Administrator |
 | **FR-11** | Sistem membebaskan kuota bidang secara otomatis saat pengajuan ditandai selesai (*Completed*) atau tanggal selesai terlewati. | Sistem / Administrator |
@@ -445,32 +445,36 @@ php artisan test
 #### Hasil Eksekusi Pengujian:
 ```text
    PASS  Tests\Unit\ExampleTest
-  ✓ that true is true                                                              0.13s  
+  ✓ that true is true                                                              0.01s  
 
    PASS  Tests\Feature\ExampleTest
-  ✓ the application returns a successful response                                  1.33s  
+  ✓ the application returns a successful response                                  0.47s  
 
    PASS  Tests\Feature\QuotaServiceTest
-  ✓ approve registration decrements quota                                          0.23s  
-  ✓ quota exceeded throws exception                                                0.05s  
+  ✓ approve registration decrements quota                                          0.04s  
+  ✓ quota exceeded throws exception                                                0.04s  
   ✓ reject approved registration restores quota                                    0.02s  
   ✓ complete approved registration releases quota                                  0.02s  
-  ✓ unique composite index prevents duplicate department period                    0.06s  
-  ✓ atomic lock prevents concurrent submission                                     0.17s  
+  ✓ unique composite index prevents duplicate department period                    0.03s  
+  ✓ atomic lock prevents concurrent submission                                     0.02s  
 
    PASS  Tests\Feature\SupervisorEvaluationFeaturesTest
-  ✓ registration rejects nis nim with less than 5 characters                       0.38s  
+  ✓ registration rejects nis nim with less than 5 characters                       0.06s  
   ✓ registration accepts nis nim with 5 or more characters                         0.03s  
-  ✓ applicant dashboard and detail display completion message                      0.09s  
-  ✓ admin can view department quotas with stats                                    0.05s  
+  ✓ applicant dashboard and detail display completion message                      0.03s  
+  ✓ admin can view department quotas with stats                                    0.02s  
   ✓ admin reports filters with applicant status and date range                     0.03s  
   ✓ api endpoints reject unauthorized access                                       0.02s  
-  ✓ api endpoints return data with valid api key                                   0.05s  
+  ✓ api endpoints return data with valid api key                                   0.02s  
   ✓ admin can add multiple supervisors simultaneously                              0.02s  
-  ✓ admin can check updates without hard reload                                    0.03s  
+  ✓ admin can check updates without hard reload                                    0.02s  
+  ✓ admin approval requires department and supervisor to prevent human error      0.02s  
+  ✓ admin approval succeeds when department and supervisor are provided           0.08s  
+  ✓ registration form submission syncs phone to user profile                      0.03s  
+  ✓ user profile update syncs phone to existing registration leader               0.03s  
 
-  Tests:    17 passed (79 assertions)
-  Duration: 3.51s
+  Tests:    21 passed (98 assertions)
+  Duration: 1.53s
 ```
 
 ### 5.2 Pengujian Fungsionalitas & Blackbox Testing
@@ -488,6 +492,9 @@ php artisan test
 | **9** | Pemantauan Tanpa Hard Reload | Mengirim pengajuan baru dari tab lain | Muncul floating notification pill di panel admin tanpa reload paksa | **LULUS** |
 | **10**| Otorisasi REST API Key | Memanggil `/api/v1/departments` tanpa X-API-KEY | Mengembalikan kode HTTP 401 Unauthorized dengan respon JSON | **LULUS** |
 | **11**| Konsumsi REST API Valid | Memanggil `/api/v1/departments` dengan API Key valid | Mengembalikan data status kuota seluruh bidang format JSON | **LULUS** |
+| **12**| Pencegahan Human Error Penerimaan | Menekan tombol persetujuan tanpa memilih bidang atau tanpa mengisi pembimbing lapangan | Sistem menampilkan pesan interaktif "Tolong pilih pembimbing terlebih dahulu" dan memblokir aksi | **LULUS** |
+| **13**| Sinkronisasi Nomor WhatsApp | Mengisi/mengubah nomor WhatsApp di profil atau form pendaftaran | Data nomor WhatsApp otomatis tersinkronisasi dua arah antara profil dan data pendaftaran | **LULUS** |
+
 
 ---
 
