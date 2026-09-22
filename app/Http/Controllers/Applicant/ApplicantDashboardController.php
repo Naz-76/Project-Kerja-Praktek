@@ -87,6 +87,11 @@ class ApplicantDashboardController extends Controller
         $user->phone = $validated['phone'];
         $user->save();
 
+        // Sinkronkan pembaruan nomor WhatsApp ke data pendaftaran peserta (sebagai ketua kelompok)
+        \App\Models\RegistrationParticipant::whereHas('registration', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->where('is_leader', true)->update(['phone' => $validated['phone']]);
+
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
 }

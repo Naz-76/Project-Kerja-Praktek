@@ -69,11 +69,15 @@ class VerificationController extends Controller
     {
         $request->validate([
             'department_id' => 'required|exists:departments,id',
-            'acceptance_message' => 'nullable|string|max:1000',
-            'supervisor_name' => 'nullable|string|max:255',
+            'supervisor_name' => 'required|string|max:255',
             'supervisor_position' => 'nullable|string|max:255',
             'supervisor_phone' => 'nullable|string|max:255',
+            'acceptance_message' => 'nullable|string|max:1000',
             'reply_letter' => 'nullable|file|mimes:pdf|max:10240',
+        ], [
+            'department_id.required' => 'Tolong pilih bidang penempatan terlebih dahulu.',
+            'department_id.exists' => 'Bidang penempatan yang dipilih tidak valid.',
+            'supervisor_name.required' => 'Tolong pilih pembimbing terlebih dahulu.',
         ]);
 
         $registration = Registration::findOrFail($id);

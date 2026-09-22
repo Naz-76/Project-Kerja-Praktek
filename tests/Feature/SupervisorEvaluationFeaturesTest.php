@@ -366,5 +366,165 @@ class SupervisorEvaluationFeaturesTest extends TestCase
                 'pending_count' => 1,
             ]);
     }
+
+    /**
+     * Test: Admin approval requires department_id and supervisor_name to prevent human error
+     */
+    public function test_admin_approval_requires_department_and_supervisor_to_prevent_human_error(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $user = User::factory()->create(['role' => 'pendaftar']);
+        $dept = Department::create(['name' => 'Bidang Aptika']);
+
+        $reg = Registration::create([
+            'user_id' => $user->id,
+            'applicant_status' => 'Mahasiswa',
+            'program_type' => 'Magang',
+            'preferred_department_id' => $dept->id,
+            'status' => 'pending',
+            'start_date' => now()->addDays(7),
+            'end_date' => now()->addDays(37),
+            'participant_count' => 1,
+            'submitted_at' => now(),
+        ]);
+
+        // 1. Submit without department_id
+        $responseNoDept = $this->actingAs($admin)->post(route('admin.verification.approve', $reg->id), [
+            'supervisor_name' => 'Dr. Pembimbing',
+        ]);
+        $responseNoDept->assertSessionHasErrors('department_id');
+
+        // 2. Submit without supervisor_name
+        $responseNoSup = $this->actingAs($admin)->post(route('admin.verification.approve', $reg->id), [
+            'department_id' => $dept->id,
+        ]);
+        $responseNoSup->assertSessionHasErrors('supervisor_name');
+
+        // Verify status remains pending
+        $this->assertEquals('pending', $reg->fresh()->status);
+    }
+
+    /**
+     * Test: Admin approval succeeds when both department and supervisor are provided
+     */
+    public function test_admin_approval_succeeds_when_department_and_supervisor_are_provided(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $user = User::factory()->create(['role' => 'pendaftar']);
+        $dept = Department::create(['name' => 'Bidang IKP']);
+        $period = QuotaService::getActivePeriod();
+
+        SlotQuota::create([
+            'department_id' => $dept->id,
+            'period' => $period,
+            'quota_total' => 10,
+            'quota_used' => 0,
+        ]);
+
+        $reg = Registration::create([
+            'user_id' => $user->id,
+            'applicant_status' => 'Mahasiswa',
+            'program_type' => 'Magang',
+            'preferred_department_id' => $dept->id,
+            'status' => 'pending',
+            'start_date' => now()->startOfMonth(),
+            'end_date' => now()->endOfMonth(),
+            'participant_count' => 1,
+            'submitted_at' => now(),
+        ]);
+
+        $response = $this->actingAs($admin)->post(route('admin.verification.approve', $reg->id), [
+            'department_id' => $dept->id,
+            'supervisor_name' => 'Ahmad Fauzi, S.Kom',
+            'supervisor_position' => 'Pranata Komputer Ahli Muda',
+            'supervisor_phone' => '08123456789',
+            'acceptance_message' => 'Selamat datang di Diskominfo Garut.',
+        ]);
+
+        $response->assertRedirect(route('admin.verification.index'));
+        $response->assertSessionHas('success');
+
+        $fresh = $reg->fresh();
+        $this->assertEquals('approved', $fresh->status);
+        $this->assertEquals($dept->id, $fresh->department_id);
+        $this->assertEquals('Ahmad Fauzi, S.Kom', $fresh->supervisor_name);
+        $this->assertEquals('Pranata Komputer Ahli Muda', $fresh->supervisor_position);
+        $this->assertEquals('08123456789', $fresh->supervisor_phone);
+    }
+
+    /**
+     * Test: Registration submission synchronizes WhatsApp phone to user profile
+     */
+    public function test_registration_form_submission_syncs_phone_to_user_profile(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create([
+            'role' => 'pendaftar',
+            'phone' => null,
+        ]);
+        $dept = Department::create(['name' => 'Bidang Aptika']);
+
+        $response = $this->actingAs($user)->post(route('applicant.registration.store'), [
+            'applicant_status' => 'Mahasiswa',
+            'program_type' => 'Magang',
+            'preferred_department_id' => $dept->id,
+            'institution_name' => 'Institut Teknologi Garut',
+            'major' => 'Informatika',
+            'leader_phone' => '081234567899',
+            'start_date' => now()->addDays(5)->format('Y-m-d'),
+            'end_date' => now()->addDays(35)->format('Y-m-d'),
+            'participants' => [
+                [
+                    'full_name' => 'Budi Santoso',
+                    'nis_nim' => '20261001',
+                ],
+            ],
+            'doc_surat_pengantar' => UploadedFile::fake()->create('surat.pdf', 100, 'application/pdf'),
+        ]);
+
+        $response->assertRedirect(route('applicant.dashboard'));
+        $this->assertEquals('081234567899', $user->fresh()->phone);
+    }
+
+    /**
+     * Test: Updating profile phone synchronizes to existing registration leader phone
+     */
+    public function test_user_profile_update_syncs_phone_to_existing_registration_leader(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'pendaftar',
+            'phone' => '081111111111',
+        ]);
+
+        $reg = Registration::create([
+            'user_id' => $user->id,
+            'applicant_status' => 'Mahasiswa',
+            'program_type' => 'Magang',
+            'status' => 'pending',
+            'start_date' => now()->addDays(7),
+            'end_date' => now()->addDays(37),
+            'participant_count' => 1,
+            'submitted_at' => now(),
+        ]);
+
+        $participant = RegistrationParticipant::create([
+            'registration_id' => $reg->id,
+            'full_name' => $user->name,
+            'nis_nim' => '20261001',
+            'major' => 'Informatika',
+            'phone' => '081111111111',
+            'email' => $user->email,
+            'is_leader' => true,
+        ]);
+
+        $response = $this->actingAs($user)->post(route('applicant.profile.update'), [
+            'name' => $user->name,
+            'phone' => '082222222222',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertEquals('082222222222', $user->fresh()->phone);
+        $this->assertEquals('082222222222', $participant->fresh()->phone);
+    }
 }
 

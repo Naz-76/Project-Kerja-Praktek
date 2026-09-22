@@ -228,12 +228,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @if($registration->status == 'pending')
                     <!-- Form Approve / Penempatan Bidang & Pesan Penerimaan (Hanya tampil jika berstatus Pending / Menunggu Verifikasi) -->
-                    <form action="{{ route('admin.verification.approve', $registration->id) }}" method="POST" enctype="multipart/form-data" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-4">
+                    <form id="formApproveRegistration" action="{{ route('admin.verification.approve', $registration->id) }}" method="POST" enctype="multipart/form-data" class="p-6 bg-slate-800/90 border border-slate-700 rounded-2xl space-y-4">
                         @csrf
                         <span class="font-bold text-xs text-emerald-400 uppercase tracking-wider block font-heading">Setujui / Konfirmasi DITERIMA</span>
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 mb-1.5">Bidang Penempatan Final *</label>
-                            <select name="department_id" id="departmentSelect" required class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <select name="department_id" id="departmentSelect" required oninvalid="this.setCustomValidity('Tolong pilih bidang penempatan terlebih dahulu')" onchange="this.setCustomValidity('')" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                                 <option value="">-- Pilih Bidang Diskominfo --</option>
                                 @foreach($departments as $dept)
                                     @php $q = $dept->slotQuotas->first(); @endphp
@@ -246,7 +246,7 @@
                         
                         <div class="p-4 bg-slate-700/50 rounded-xl space-y-4 border border-slate-700">
                             <div>
-                                <label class="block text-xs font-semibold text-emerald-400 mb-1.5"><i class="fa-solid fa-user-tie"></i> Pilih Pembimbing Lapangan</label>
+                                <label class="block text-xs font-semibold text-emerald-400 mb-1.5"><i class="fa-solid fa-user-tie"></i> Pilih Pembimbing Lapangan *</label>
                                 <select id="supervisorSelect" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                                     <option value="">-- Pilih Pembimbing (Otomatis Isi Form) --</option>
                                 </select>
@@ -255,8 +255,8 @@
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="sm:col-span-2">
-                                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Nama Lengkap Pembimbing</label>
-                                    <input type="text" id="supervisorName" name="supervisor_name" value="{{ old('supervisor_name', $registration->supervisor_name) }}" placeholder="Ketik atau pilih dari atas..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Nama Lengkap Pembimbing *</label>
+                                    <input type="text" id="supervisorName" name="supervisor_name" value="{{ old('supervisor_name', $registration->supervisor_name) }}" placeholder="Ketik atau pilih dari opsi di atas..." required oninvalid="this.setCustomValidity('Tolong pilih pembimbing terlebih dahulu')" oninput="this.setCustomValidity('')" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                                 </div>
 
                                 <div>
@@ -291,7 +291,7 @@
                             <input type="file" name="reply_letter" accept=".pdf" class="w-full text-xs text-slate-400 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-slate-700 file:text-slate-200">
                         </div>
 
-                        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading active:scale-[0.98]">
+                        <button type="button" onclick="handleApproveClick()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 font-heading active:scale-[0.98]">
                             <i class="fa-solid fa-circle-check"></i> Konfirmasi Diterima & Simpan
                         </button>
                     </form>
@@ -475,6 +475,7 @@
             const selectedOption = supervisorSelect.options[supervisorSelect.selectedIndex];
             if (selectedOption.value) {
                 inputName.value = selectedOption.dataset.name;
+                inputName.setCustomValidity('');
                 inputPosition.value = selectedOption.dataset.position;
                 inputPhone.value = selectedOption.dataset.phone;
             } else {
@@ -485,7 +486,10 @@
 
         // Event Listeners
         if (departmentSelect) {
-            departmentSelect.addEventListener('change', updateSupervisorDropdown);
+            departmentSelect.addEventListener('change', function() {
+                departmentSelect.setCustomValidity('');
+                updateSupervisorDropdown();
+            });
             // Panggil sekali saat load jika sudah ada yang terpilih
             updateSupervisorDropdown();
         }
@@ -496,6 +500,61 @@
     });
 
     // Custom Modal Confirmation Handlers (Design Guidelines Compliant)
+    function handleApproveClick() {
+        const form = document.getElementById('formApproveRegistration');
+        if (!form) return;
+
+        const deptSelect = document.getElementById('departmentSelect');
+        const supName = document.getElementById('supervisorName');
+
+        // Cek validasi Bidang Penempatan
+        if (!deptSelect || !deptSelect.value) {
+            if (deptSelect) {
+                deptSelect.setCustomValidity('Tolong pilih bidang penempatan terlebih dahulu');
+                deptSelect.focus();
+                deptSelect.reportValidity();
+            }
+            return;
+        } else {
+            deptSelect.setCustomValidity('');
+        }
+
+        // Cek validasi Pembimbing Lapangan
+        if (!supName || !supName.value.trim()) {
+            if (supName) {
+                supName.setCustomValidity('Tolong pilih pembimbing terlebih dahulu');
+                supName.focus();
+                supName.reportValidity();
+            }
+            return;
+        } else {
+            supName.setCustomValidity('');
+        }
+
+        // Cek validasi form HTML5 secara keseluruhan
+        if (!form.reportValidity()) {
+            return;
+        }
+
+        // Ambil nama bidang dan nama pembimbing untuk ditampilkan di modal konfirmasi
+        const deptText = deptSelect.options[deptSelect.selectedIndex].text.split('(')[0].trim();
+        const supervisorText = supName.value.trim();
+
+        openCustomConfirm({
+            title: 'Konfirmasi Penerimaan & Penempatan',
+            message: `Apakah Anda yakin ingin menyetujui pengajuan ini?<br><div class="mt-2.5 p-3 bg-slate-800/80 rounded-xl border border-slate-700 text-[11px] text-left space-y-1"><div class="flex justify-between"><span class="text-slate-400">Bidang:</span><strong class="text-emerald-400 font-bold">${deptText}</strong></div><div class="flex justify-between"><span class="text-slate-400">Pembimbing:</span><strong class="text-white font-semibold">${supervisorText}</strong></div></div><span class="text-[10px] text-amber-400/90 mt-2 block"><i class="fa-solid fa-circle-exclamation mr-1"></i>Pastikan bidang dan pembimbing telah sesuai sebelum melanjutkan.</span>`,
+            icon: 'fa-solid fa-circle-check',
+            iconColor: 'text-emerald-400',
+            iconBg: 'bg-emerald-500/20',
+            iconBorder: 'border-emerald-500/30',
+            btnText: 'Ya, Setujui & Simpan',
+            btnColor: 'bg-emerald-600 hover:bg-emerald-700',
+            onConfirm: function() {
+                form.submit();
+            }
+        });
+    }
+
     function handleRejectClick() {
         const form = document.getElementById('formRejectRegistration');
         if (!form) return;

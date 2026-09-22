@@ -150,4 +150,43 @@ Duration: 1.07s
 3. **Penyelarasan Header Halaman Kelola Bidang & Kuota:**
    - **File:** [`index.blade.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/resources/views/admin/departments/index.blade.php).
    - **Solusi:** Menghapus teks statis `• Administrasi Kantor` dan badge `Periode: 2026-Q3` serta kotak pembungkus putih pada header, sehingga header halaman ini kini seragam, bersih, dan konsisten dengan seluruh halaman admin lainnya.
+4. **Pencegahan Human Error Saat Penerimaan Pengajuan (Wajib Pilih Bidang & Pembimbing Lapangan):**
+   - **File Terkait:**
+     - Controller: [`VerificationController.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/app/Http/Controllers/Admin/VerificationController.php)
+     - Blade View: [`show.blade.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/resources/views/admin/verification/show.blade.php)
+     - Automated Test: [`SupervisorEvaluationFeaturesTest.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/tests/Feature/SupervisorEvaluationFeaturesTest.php)
+   - **Latar Belakang & Masalah:**
+     Admin berpotensi secara tidak sengaja menyetujui (*approve*) pengajuan peserta tanpa menentukan bidang penempatan final atau tanpa menunjuk pembimbing lapangan, yang menyebabkan kebingungan bagi peserta saat hari pertama magang/PKL. Selain itu, pesan peringatan bawaan browser sebelumnya menampilkan bahasa Inggris default (*"Please fill out this field."*) yang kurang komunikatif.
+   - **Solusi & Implementasi:**
+     - **Pesan Interaktif Bahasa Indonesia:** Mengganti pesan bawaan browser menggunakan API HTML5 `setCustomValidity()` dan atribut `oninvalid`/`oninput`/`onchange` menjadi: **"Tolong pilih pembimbing terlebih dahulu"** dan **"Tolong pilih bidang penempatan terlebih dahulu"**.
+     - **Validasi Backend Ketat:** `VerificationController::approve()` mewajibkan `department_id` (`required|exists:departments,id`) dan `supervisor_name` (`required|string|max:255`), dilengkapi pesan error berbahasa Indonesia yang seragam.
+     - **Interaksi Frontend & Visual Cue:** Ditambahkan tanda bintang merah/wajib (`*`) pada label Pembimbing Lapangan, atribut `required` pada field nama pembimbing, dan validasi interaktif sebelum aksi dikirim.
+     - **Custom Confirmation Modal (Glassmorphism Emerald):** Saat tombol *"Konfirmasi Diterima & Simpan"* ditekan, dijalankan fungsi `handleApproveClick()` yang memverifikasi kelengkapan form dan memunculkan modal pop-up konfirmasi elegan berisi ringkasan *Bidang Penempatan* dan *Nama Pembimbing* yang dipilih.
+
+5. **Sinkronisasi Dua Arah Nomor WhatsApp Antara Profil Pengguna dan Formulir Pendaftaran:**
+   - **File Terkait:**
+     - Blade View: [`create.blade.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/resources/views/applicant/registration/create.blade.php)
+     - Controller Pendaftaran: [`RegistrationController.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/app/Http/Controllers/Applicant/RegistrationController.php)
+     - Controller Profil: [`ApplicantDashboardController.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/app/Http/Controllers/Applicant/ApplicantDashboardController.php)
+     - Automated Test: [`SupervisorEvaluationFeaturesTest.php`](file:///d:/Kerja%20Praktek%20DISKOMINFO/Project%20Sistem/Project-Kerja-Praktek/tests/Feature/SupervisorEvaluationFeaturesTest.php)
+   - **Latar Belakang & Masalah:**
+     Nomor WhatsApp yang telah diisi pada Profil Akun peserta sebelumnya tidak otomatis terisi di form pendaftaran, dan nomor yang diisikan di form pendaftaran tidak otomatis memperbarui profil akun atau data kontak ketua.
+   - **Solusi & Implementasi:**
+     - **Profil $\rightarrow$ Form Pendaftaran:** Nilai default input `leader_phone` otomatis mengambil nomor telepon akun pengguna (`value="{{ old('leader_phone', auth()->user()->phone) }}"`).
+     - **Form Pendaftaran $\rightarrow$ Profil:** Saat pendaftaran dikirimkan (`store`), jika nomor WhatsApp pada form berbeda atau profil belum memiliki nomor, sistem otomatis memperbarui `users.phone`.
+     - **Profil $\rightarrow$ Data Pendaftaran:** Saat pengguna memperbarui nomor WhatsApp di halaman Profil, sistem otomatis memperbarui nomor telepon kontak ketua pada data pendaftaran aktif (`registration_participants.phone`).
+   - **Hasil Pengujian Otomatis:**
+     ```bash
+     PASS  Tests\Feature\SupervisorEvaluationFeaturesTest
+     ✓ admin approval requires department and supervisor to prevent human error
+     ✓ admin approval succeeds when department and supervisor are provided
+     ✓ registration form submission syncs phone to user profile
+     ✓ user profile update syncs phone to existing registration leader
+
+     Tests:    21 passed (98 assertions)
+     Duration: 1.53s
+     ```
+     *Status: 100% Lulus (21 tests, 98 assertions).*
+
+
 
